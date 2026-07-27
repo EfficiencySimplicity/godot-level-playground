@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://yuk7707swaiy"]
+
+[ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_1tffm"]
+[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_ssh3t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1gsmf"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1tffm"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ssh3t"]
+size = Vector2(64, 64)
+
+[node name="Locker" unique_id=70122258 instance=ExtResource("1_1tffm")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=678166529]
+position = Vector2(-32, -32)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ssh3t")
+
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="0" unique_id=1655109649]
+shape = SubResource("RectangleShape2D_1gsmf")
+
+[node name="CollisionShape2D" parent="Placement/MustBeSolids" parent_id_path=PackedInt32Array(538475917) index="0" unique_id=2018220721]
+position = Vector2(-32, -96)
+shape = SubResource("RectangleShape2D_1tffm")
+
+[node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]
+shape = SubResource("RectangleShape2D_ssh3t")

@@ -10,21 +10,21 @@ class_name ItemPlacer extends Node2D
 func compile() -> PlacementStack:
 	var layers: Array[PlacementLayer]
 	
-	if _solids != null:
-		var _solids_layer = MapLayer.from_area2d(_solids)
+	var _solids_layer = MapLayer.from_area2d(_solids)
+	if _solids_layer != null:
 		var solids_layer = PlacementLayer.new(_solids_layer, 
 			{"Solids": _solids_layer.doesnt_collide, "MustBeEmpty": _solids_layer.doesnt_collide},
 			{"Solids": _solids_layer.place_on})
 		layers.append(solids_layer)
 		
-	if _must_be_solids != null:
-		var _must_be_solids_layer = MapLayer.from_area2d(_must_be_solids)
+	var _must_be_solids_layer = MapLayer.from_area2d(_must_be_solids)
+	if _must_be_solids_layer != null:
 		var must_be_solids_layer = PlacementLayer.new(_must_be_solids_layer, 
 			{"Solids": _must_be_solids_layer.overlaps})
 		layers.append(must_be_solids_layer)
 		
-	if _must_be_empty != null:
-		var _must_be_empty_layer = MapLayer.from_area2d(_must_be_empty)
+	var _must_be_empty_layer = MapLayer.from_area2d(_must_be_empty)
+	if _must_be_empty_layer != null:
 		var must_be_empty_layer = PlacementLayer.new(_must_be_empty_layer, 
 			{"Solids": _must_be_empty_layer.doesnt_collide},
 			{"MustBeEmpty": _must_be_empty_layer.place_on})

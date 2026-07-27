@@ -1,6 +1,15 @@
 [gd_scene format=3 uid="uid://dkripvdutw57v"]
 
 [ext_resource type="PackedScene" uid="uid://d3vkeu8bqwqg3" path="res://Scenes/room_shape_generator.tscn" id="1_tam23"]
+[ext_resource type="PackedScene" uid="uid://yuk7707swaiy" path="res://Scenes/locker.tscn" id="2_1clf0"]
+[ext_resource type="PackedScene" uid="uid://dg274dgxm8udd" path="res://Scenes/table.tscn" id="3_0u5ym"]
+[ext_resource type="Script" uid="uid://c11lg1h47ilqr" path="res://Scripts/element_set.gd" id="3_dg8kd"]
+[ext_resource type="PackedScene" uid="uid://cotse7q4g2p5l" path="res://Scenes/desk.tscn" id="4_0u5ym"]
+
+[sub_resource type="Resource" id="Resource_tam23"]
+script = ExtResource("3_dg8kd")
+elements = Array[PackedScene]([ExtResource("2_1clf0"), ExtResource("3_0u5ym"), ExtResource("4_0u5ym")])
+metadata/_custom_type_script = "uid://c11lg1h47ilqr"
 
 [node name="TestingGround" type="Node2D" unique_id=1366896337]
 
@@ -8,3 +17,4 @@
 zoom = Vector2(0.1, 0.1)
 
 [node name="RoomShapeGenerator" parent="." unique_id=1217838495 instance=ExtResource("1_tam23")]
+elements = SubResource("Resource_tam23")

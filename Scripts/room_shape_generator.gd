@@ -1,12 +1,12 @@
 extends Area2D
 
-@export var elements: PlacementSet
+@export var elements: ElementSet
 
 func create_rect(min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> RectangleShape2D:
 	var rect = RectangleShape2D.new()
 	rect.size = Vector2(randi_range(min_size.x, max_size.x), randi_range(min_size.y, max_size.y))
 	return rect
-	
+
 func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> CollisionShape2D:
 
 	var old_rect = old_room.shape

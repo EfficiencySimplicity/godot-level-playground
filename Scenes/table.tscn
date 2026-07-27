@@ -1,34 +1,24 @@
 [gd_scene format=3 uid="uid://dg274dgxm8udd"]
 
-[ext_resource type="Script" uid="uid://bkl1dxet54wf6" path="res://Scripts/item_placer.gd" id="1_ix8et"]
+[ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_4ppvu"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_4ppvu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
-size = Vector2(320, 128)
+size = Vector2(192, 64)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8i87d"]
-size = Vector2(448, 256)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r4jc3"]
+size = Vector2(320, 192)
 
-[node name="Table" type="Node2D" unique_id=854327614 node_paths=PackedStringArray("_solids", "_must_be_empty")]
-script = ExtResource("1_ix8et")
-_solids = NodePath("Solids")
-_must_be_empty = NodePath("MustBeEmpty")
+[node name="Table" unique_id=70122258 instance=ExtResource("1_4ppvu")]
 
-[node name="Solids" type="Area2D" parent="." unique_id=897494376]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Solids" unique_id=1763028950]
-position = Vector2(32, 0)
-shape = SubResource("RectangleShape2D_krb5w")
-debug_color = Color(0, 0.6, 0.69803923, 0)
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=519867239]
-position = Vector2(32, 0)
-scale = Vector2(2.5, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=2025941136]
+position = Vector2(-32, -32)
+scale = Vector2(1.5, 0.5)
 texture = ExtResource("2_4ppvu")
 
-[node name="MustBeEmpty" type="Area2D" parent="." unique_id=1081928540]
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="0" unique_id=1655109649]
+shape = SubResource("RectangleShape2D_krb5w")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MustBeEmpty" unique_id=610698596]
-position = Vector2(32, 0)
-shape = SubResource("RectangleShape2D_8i87d")
-debug_color = Color(0, 0.6, 0.69803923, 0)
+[node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]
+position = Vector2(-32, -32)
+shape = SubResource("RectangleShape2D_r4jc3")

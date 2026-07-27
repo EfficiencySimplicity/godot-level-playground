@@ -1,4 +1,4 @@
-class_name PlacementSet extends Resource
+class_name ElementSet extends Resource
 
 # TODO: percentages
 @export var elements: Array[PackedScene]

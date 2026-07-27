@@ -115,10 +115,18 @@ func overlaps(other: MapLayer, pos: Placement) -> bool:
 	
 ## The MapLayer will be 0 (false) wherever it is outside the room
 static func from_area2d(area: Area2D, _cell_size: int = 64) -> MapLayer:
+	if area == null:
+		return null
+		
 	var minis: Array[MapLayer] = []
-	for shape in area.get_children():
-		if shape is CollisionShape2D:
-			minis.append(MapLayer.from_collision_shape(shape, _cell_size))
+	
+	var children = area.get_children().filter(func(x): return x is CollisionShape2D and x.shape != null)
+	
+	if children.size() == 0:
+		return null
+		
+	for shape in children:
+		minis.append(MapLayer.from_collision_shape(shape, _cell_size))
 			
 	return MapLayer.from_layers(minis)
 

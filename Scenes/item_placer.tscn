@@ -1,43 +1,29 @@
 [gd_scene format=3 uid="uid://d1mrx41hyr2ff"]
 
-[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="1_1gsmf"]
 [ext_resource type="Script" uid="uid://bkl1dxet54wf6" path="res://Scripts/item_placer.gd" id="1_tuwl4"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
-size = Vector2(128, 128)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8i87d"]
-size = Vector2(128, 64)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_m0e24"]
-size = Vector2(128, 64)
-
-[node name="ItemPlacer" type="Area2D" unique_id=998033430 node_paths=PackedStringArray("_solids", "_must_be_solids", "_must_be_empty")]
+[node name="ItemPlacer" type="Node2D" unique_id=70122258 node_paths=PackedStringArray("_solids", "_must_be_solids", "_must_be_empty")]
 script = ExtResource("1_tuwl4")
-_solids = NodePath(".")
-_must_be_solids = NodePath("Area2D")
-_must_be_empty = NodePath("MustBeEmpty")
+_solids = NodePath("Placement/Solids")
+_must_be_solids = NodePath("Placement/MustBeSolids")
+_must_be_empty = NodePath("Placement/MustBeEmpty")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=393366733]
-texture = ExtResource("1_1gsmf")
-centered = false
+[node name="Placement" type="Node2D" parent="." unique_id=412783648]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=736371461]
-position = Vector2(64, 64)
-shape = SubResource("RectangleShape2D_krb5w")
+[node name="Solids" type="Area2D" parent="Placement" unique_id=1801023206]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/Solids" unique_id=1655109649]
+position = Vector2(-32, -32)
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
-[node name="Area2D" type="Area2D" parent="." unique_id=1187614208]
+[node name="MustBeSolids" type="Area2D" parent="Placement" unique_id=538475917]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1675395458]
-position = Vector2(64, -32)
-shape = SubResource("RectangleShape2D_8i87d")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/MustBeSolids" unique_id=2018220721]
+position = Vector2(32, -32)
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
-[node name="MustBeEmpty" type="Area2D" parent="." unique_id=938197147]
-position = Vector2(64, 64)
+[node name="MustBeEmpty" type="Area2D" parent="Placement" unique_id=1959477447]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MustBeEmpty" unique_id=2115069037]
-position = Vector2(0, 96)
-shape = SubResource("RectangleShape2D_m0e24")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/MustBeEmpty" unique_id=1239424687]
+position = Vector2(-32, 32)
 debug_color = Color(0, 0.6, 0.69803923, 0)

@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://cotse7q4g2p5l"]
+
+[ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_825yk"]
+[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_ii4wa"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p3ia7"]
+size = Vector2(64, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7rkfp"]
+size = Vector2(256, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ygxyb"]
+size = Vector2(64, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ii4wa"]
+size = Vector2(256, 320)
+
+[node name="Desk" unique_id=70122258 instance=ExtResource("1_825yk")]
+
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="0" unique_id=1655109649]
+position = Vector2(-96, 0)
+shape = SubResource("RectangleShape2D_p3ia7")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="1" unique_id=157756343]
+position = Vector2(0, 96)
+shape = SubResource("RectangleShape2D_7rkfp")
+debug_color = Color(0, 0.6, 0.69803923, 0)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="2" unique_id=321041718]
+position = Vector2(96, 0)
+shape = SubResource("RectangleShape2D_ygxyb")
+debug_color = Color(0, 0.6, 0.69803923, 0)
+
+[node name="CollisionShape2D" parent="Placement/MustBeSolids" parent_id_path=PackedInt32Array(538475917) index="0" unique_id=2018220721]
+position = Vector2(0, -32)
+
+[node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]
+position = Vector2(0, -32)
+shape = SubResource("RectangleShape2D_ii4wa")
+
+[node name="Sprites" type="Node2D" parent="." index="1" unique_id=1231288251]
+scale = Vector2(1.9999989, 1.9999989)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprites" index="0" unique_id=1613451159]
+position = Vector2(0, 48)
+scale = Vector2(1, 0.25)
+texture = ExtResource("2_ii4wa")
+region_rect = Rect2(0, 8, 128, 120)
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprites" index="1" unique_id=438179857]
+position = Vector2(-48, 0)
+scale = Vector2(0.25, 1)
+texture = ExtResource("2_ii4wa")
+region_rect = Rect2(0, 8, 128, 120)
+
+[node name="Sprite2D3" type="Sprite2D" parent="Sprites" index="2" unique_id=2094707270]
+position = Vector2(48, 0)
+scale = Vector2(0.25, 1)
+texture = ExtResource("2_ii4wa")
+region_rect = Rect2(0, 8, 128, 120)
