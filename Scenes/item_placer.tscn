@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://d1mrx41hyr2ff"]
+
+[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="1_1gsmf"]
+[ext_resource type="Script" uid="uid://bkl1dxet54wf6" path="res://Scripts/item_placer.gd" id="1_tuwl4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8i87d"]
+size = Vector2(128, 64)
+
+[node name="ItemPlacer" type="Area2D" unique_id=998033430 node_paths=PackedStringArray("_solids", "_must_be_solids")]
+script = ExtResource("1_tuwl4")
+_solids = NodePath(".")
+_must_be_solids = NodePath("Area2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=393366733]
+texture = ExtResource("1_1gsmf")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=736371461]
+position = Vector2(64, 64)
+shape = SubResource("RectangleShape2D_krb5w")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1187614208]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1675395458]
+position = Vector2(64, -32)
+shape = SubResource("RectangleShape2D_8i87d")
