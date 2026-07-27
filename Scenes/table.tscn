@@ -19,6 +19,7 @@ _must_be_empty = NodePath("MustBeEmpty")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Solids" unique_id=1763028950]
 position = Vector2(32, 0)
 shape = SubResource("RectangleShape2D_krb5w")
+debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=519867239]
 position = Vector2(32, 0)
@@ -30,3 +31,4 @@ texture = ExtResource("2_4ppvu")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MustBeEmpty" unique_id=610698596]
 position = Vector2(32, 0)
 shape = SubResource("RectangleShape2D_8i87d")
+debug_color = Color(0, 0.6, 0.69803923, 0)

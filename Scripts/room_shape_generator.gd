@@ -58,8 +58,7 @@ func place_element(element: ItemPlacer, map_stack: MapLayerStack):
 	print("Size: ", stack.size, ", world origin: ", stack.world_origin)
 	# tests it on the given layers
 	var ok_placements = stack.get_ok_placements_on(map_stack)
-	print("I got the ok placements:")
-	print(ok_placements)
+	print("I got the ok placements: ", ok_placements.size())
 	if ok_placements.size() == 0:
 		print("Couldn't place ", element.name)
 		element.queue_free()
@@ -83,17 +82,15 @@ func get_solids_layer():
 	bordered.world_origin = layer.world_origin - Vector2(64, 64)
 	print("I got the border area:")
 	print(bordered)
-	layer.stamp_on(bordered, Vector2i(1, 1))
+	layer.stamp_on(bordered, Placement.new(Vector2i(1, 1)))
 	print("I stamped inside the border area:")
 	print(bordered)
 	return bordered
 	
 func get_must_be_empty_layer(solids_layer: MapLayer):
-	print("I'm getting the must-be-empty layer")
 	return MapLayer.with_size(solids_layer.size)
 
 func generate():
-	print("I am generating a room")
 	var shape = create_collision_shape(create_rect())
 	print("I created a collision shape with shape ", shape.shape.size)
 	var shape_2 = extend_room(shape)
@@ -105,21 +102,13 @@ func generate():
 
 func _ready():
 	generate()
+	
 	var solids_layer = get_solids_layer()
-	print("I got the solids layer:")
-	print(solids_layer)
 	var must_be_empty_layer = get_must_be_empty_layer(solids_layer)
-	print("I got the must-be-empty layer:")
-	print(must_be_empty_layer)
 	var stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "MustBeEmpty": must_be_empty_layer})
-	print("I put it in a stack:")
-	print(stack)
+
 	for i in 25:
 		place_element(elements.get_element(), stack)
-	print("I generated the room")
-	var map_layer = MapLayer.from_area2d(self)
-	print("I got the room's MapLayer, with size", map_layer.size, ":")
-	print(map_layer)
-	var layer_2 = MapLayer.with_size(map_layer.size + Vector2i(2, 2))
-	map_layer.place_on(layer_2, Vector2i(1,1))
-	print(layer_2)
+		
+	print("The new solids layer:")
+	print(solids_layer)

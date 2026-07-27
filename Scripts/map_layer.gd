@@ -37,7 +37,7 @@ static func from_layers(layers: Array) -> MapLayer:
 	map_layer.cell_size = _cell_size
 	
 	for layer in layers:
-		layer.place_on(map_layer, (layer.world_origin - bounds.position) / _cell_size)
+		layer.place_on(map_layer, Placement.new((layer.world_origin - bounds.position) / _cell_size))
 	
 	return map_layer
 	
@@ -51,65 +51,65 @@ static func get_group_bounds(layers: Array[MapLayer]) -> Rect2:
 func get_world_rect() -> Rect2:
 	return Rect2(world_origin, size * cell_size)
 	
+## Returns the top left corner of the specified cell in world space
 func cell_to_world(pos: Vector2i):
 	return world_origin + Vector2(pos * cell_size)
 
 ## Gets an value from the MapLayer
 func g(pos: Vector2i) -> bool:
 	return data.get_bitv(pos)
-	
+
 ## Sets a value in the MapLayer
 func s(pos: Vector2i, value: bool):
 	data.set_bitv(pos, value)
 	
 ## Stamps this MapLayer on another, overwriting all values within its area
-func stamp_on(other: MapLayer, pos: Vector2i):
+func stamp_on(other: MapLayer, pos: Placement):
 	for y in range(size.y):
 		for x in range(size.x):
 			# we can just add the two since down is +y in GD
 			# of course if up was +y the whole room would be
 			# in quadrant I so it doesn't matter anyway, right?
-			other.s(pos + Vector2i(x, y), g(Vector2i(x, y)))
+			other.s(pos.map_vector2i(Vector2i(x, y)), g(Vector2i(x, y)))
 			
 ## Places this MapLayer on another, only writing down 1s
-func place_on(other: MapLayer, pos: Vector2i):
+func place_on(other: MapLayer, pos: Placement):
 	for y in range(size.y):
 		for x in range(size.x):
 			# we can just add the two since down is +y in GD
 			# of course if up was +y the whole room would be
 			# in quadrant I so it doesn't matter anyway, right?
 			if g(Vector2i(x, y)):
-				other.s(pos + Vector2i(x, y), true)
+				other.s(pos.map_vector2i(Vector2i(x, y)), true)
 			
 ## Returns true if the MapLayers contain equal values starting at the specified position
-func matches(other: MapLayer, pos: Vector2i = Vector2i(0, 0)) -> bool:
+func matches(other: MapLayer, pos: Placement) -> bool:
 	for y in range(size.y):
 		for x in range(size.x):
 			# we can just add the two since down is +y in GD
 			# of course if up was +y the whole room would be
 			# in quadrant I so it doesn't matter anyway, right?
-			if other.g(pos + Vector2i(x, y)) != g(Vector2i(x, y)):
+			if other.g(pos.map_vector2i(Vector2i(x, y))) != g(Vector2i(x, y)):
 				return false
 	return true
 	
 ## Returns true if the MapLayers have at least 1 cell where they're both true
-func collides(other: MapLayer, pos: Vector2i = Vector2i(0, 0)) -> bool:
+func collides(other: MapLayer, pos: Placement) -> bool:
 	for y in range(size.y):
 		for x in range(size.x):
-			if other.g(pos + Vector2i(x, y)) and g(Vector2i(x, y)):
+			if other.g(pos.map_vector2i(Vector2i(x, y))) and g(Vector2i(x, y)):
 				return true
 	return false
 	
 ## Returns true if the MapLayers do not collide with any 1s
-func doesnt_collide(other: MapLayer, pos: Vector2i = Vector2i(0, 0)) -> bool:
+func doesnt_collide(other: MapLayer, pos: Placement) -> bool:
 	return !collides(other, pos)
 	
 ## Returns true if wherever the MapLayer is true, the other is also
-func overlaps(other: MapLayer, pos: Vector2i = Vector2i(0, 0)) -> bool:
-	
+func overlaps(other: MapLayer, pos: Placement) -> bool:
 	for y in range(size.y):
 		for x in range(size.x):
-			if g(Vector2i(x, y)) and not other.g(pos + Vector2i(x, y)):
+			if g(Vector2i(x, y)) and not other.g(pos.map_vector2i(Vector2i(x, y))):
 					return false
 	return true
 	

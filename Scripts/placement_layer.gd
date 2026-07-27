@@ -23,12 +23,12 @@ func _init(layer: MapLayer, _target_layers: Dictionary[String, Callable], _place
 	print("Target layers: ", target_layers)
 	print("Placement layers: ", placement_layers)
 
-func test_placeable(stack: MapLayerStack, pos: Vector2i) -> bool:
+func test_placeable(stack: MapLayerStack, pos: Placement) -> bool:
 	for layer in target_layers:
 		if !target_layers[layer].call(stack.layers[layer], pos):
 			return false
 	return true
 
-func place(stack: MapLayerStack, pos: Vector2i):
+func place(stack: MapLayerStack, pos: Placement):
 	for layer in placement_layers:
 		placement_layers[layer].call(stack.layers[layer], pos)
