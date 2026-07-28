@@ -12,19 +12,15 @@ var world_origin: Vector2
 ## The size in world space of each cell in the MapLayer
 var cell_size: int = 64
 
-## Sets the size of the MapLayer, optionally filling it with a value.[br]
-## Returns the MapLayer for easy piping
-static func with_size(_size: Vector2i, fill: bool = false) -> MapLayer:
-	var map_layer = MapLayer.new()
-	map_layer.size = _size
-	map_layer.data = BitMap.new()
-	map_layer.data.create(_size)
-	map_layer.data.set_bit_rect(Rect2i(Vector2i(0, 0), _size), fill)
-	return map_layer
+func _init(_size: Vector2i, fill: bool = false):
+	size = _size
+	data = BitMap.new()
+	data.create(_size)
+	data.set_bit_rect(Rect2i(Vector2i(0, 0), _size), fill)
 
 ## Creates a MapLayer from a bounding rect (world space
 static func from_rect(rect: Rect2, _cell_size: int = 64, fill: bool = false) -> MapLayer:
-	var map_layer = MapLayer.with_size(rect.size / _cell_size, fill)
+	var map_layer = MapLayer.new(rect.size / _cell_size, fill)
 	map_layer.world_origin = rect.position
 	return map_layer
 	
@@ -32,7 +28,7 @@ static func from_layers(layers: Array) -> MapLayer:
 	var bounds = get_group_bounds(layers)
 	var _cell_size = layers[0].cell_size
 	
-	var map_layer = MapLayer.with_size(bounds.size / _cell_size)
+	var map_layer = MapLayer.new(bounds.size / _cell_size)
 	map_layer.world_origin = bounds.position
 	map_layer.cell_size = _cell_size
 	
@@ -137,7 +133,7 @@ func inverted() -> MapLayer:
 		for x in size.x:
 			new_data.set_bit(x, y, !data.get_bit(x, y))
 			
-	var new_layer = MapLayer.new()
+	var new_layer = MapLayer.new(Vector2(0, 0))
 	new_layer.data = new_data
 	new_layer.size = size
 	new_layer.cell_size = cell_size
