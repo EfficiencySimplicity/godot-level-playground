@@ -2,22 +2,22 @@ class_name PlacementStack
 
 # could store size and world bounds as a whole thing forever...
 
-var layers: Array[PlacementLayer]
+var layers: Dictionary[String, PlacementLayer]
 
 # it would be better to store smaller maps and offsets,
 # but really, how much better?
 var world_origin: Vector2
 var size: Vector2i
 
-static func from_placement_layers(_layers: Array[PlacementLayer]):
+static func from_placement_layers(_layers: Dictionary[String, PlacementLayer]):
 	var stack = PlacementStack.new()
 	stack.layers = _layers
-	var array: Array[MapLayer]
-	array.assign(_layers)
-	var bounds = MapLayer.get_group_bounds(array)
+	var _array: Array[MapLayer] = []
+	_array.assign(_layers.values().map(func(x): return x.old_layer))
+	var bounds = MapLayer.get_group_bounds(_array)
 	
 	stack.world_origin = bounds.position
-	stack.size = Vector2i(bounds.size / _layers[0].cell_size)
+	stack.size = Vector2i(bounds.size / _layers.values()[0].cell_size)
 	
 	return stack
 	
@@ -97,11 +97,11 @@ func get_ok_placements_on(other: MapLayerStack) -> Array[Placement]:
 	return ok_positions
 	
 func placement_is_ok(other: MapLayerStack, pos: Placement):
-	for layer in layers:
+	for layer in layers.values():
 		if !layer.test_placeable(other, get_match_position(pos, layer)):
 			return false
 	return true
 	
 func place(other: MapLayerStack, pos: Placement):
-	for layer in layers:
+	for layer in layers.values():
 		layer.place(other, get_match_position(pos, layer))

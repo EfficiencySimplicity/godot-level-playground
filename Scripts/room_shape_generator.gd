@@ -52,28 +52,22 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 func place_element(element: ItemPlacer, map_stack: MapLayerStack):
 	print("I'm going to try to place ", element.name)
 	# creates the PlacementStack
-	var stack = element.compile()
-	# tests it on the given layers
-	var ok_placements = stack.get_ok_placements_on(map_stack)
-	if ok_placements.size() == 0:
+	if element.attempt_place(self, map_stack):
 		print("I couldn't place ", element.name)
-		element.queue_free()
-		return
-		
-	var pos = ok_placements.pick_random()
-	print("I got the ok placement: ", pos)
+	else:
+		print("I placed the element")
 	
-	# Places it, accounting for all the offsets globally (using self),
-	# and fills in the maps by reference
-	element.place(self, stack, map_stack, pos)
-	print("I placed the element")
-	
-func get_map_stack() -> MapLayerStack:
+func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
 	var layer = MapLayer.from_area2d(self, 64).inverted()
 	var solids_layer = MapLayer.new(layer.size + Vector2i(2, 2), true)
 	solids_layer.world_origin = layer.world_origin - Vector2(64, 64)
 	layer.stamp_on(solids_layer, Placement.new(Vector2i(1, 1)))
+	
+	return solids_layer
+	
+func get_map_stack() -> MapLayerStack:
+	var solids_layer = get_solids_layer()
 	
 	var must_be_empty_layer = MapLayer.new(solids_layer.size)
 	
@@ -98,3 +92,5 @@ func _ready():
 
 	for i in 25:
 		place_element(elements.get_element(), stack)
+		
+	get_solids_layer().stamp_on_tilemap(owner.find_child("Floor"), 0, Vector2i(1, 0), Vector2i(0, 0))

@@ -17,6 +17,14 @@ func _init(_size: Vector2i = Vector2i(1, 1), fill: bool = false):
 	data = BitMap.new()
 	data.create(_size)
 	data.set_bit_rect(Rect2i(Vector2i(0, 0), _size), fill)
+	
+func copy() -> MapLayer:
+	var m = MapLayer.new(Vector2(1, 1))
+	m.data = data.duplicate()
+	m.size = size
+	m.world_origin = world_origin
+	m.cell_size = cell_size
+	return m
 
 ## Creates a MapLayer from a bounding rect (world space
 static func from_rect(rect: Rect2, _cell_size: int = 64, fill: bool = false) -> MapLayer:
@@ -141,7 +149,45 @@ func inverted() -> MapLayer:
 	
 	return new_layer
 	
+
+func place_on_tilemap(tilemap: TileMapLayer, source_id: int = -1, tile_pos: Vector2i = Vector2i(0, 0)):
+	# https://www.reddit.com/r/godot/comments/gb31yp/get_tile_index_for_use_in_tilemapset_cellx_y_tile/
+	iter_cells(
+		func(xy):
+			if !g(xy):
+				return
+			var cell = tilemap.local_to_map(world_origin + Vector2(xy * Vector2i(cell_size, cell_size)))
+			tilemap.set_cell(cell, source_id, tile_pos)
+	)
 	
+func stamp_on_tilemap(tilemap: TileMapLayer, source_id: int = -1, true_tile_pos: Vector2i = Vector2i(0, 0), false_tile_pos: Vector2i = Vector2i(-1, -1)):
+	# https://www.reddit.com/r/godot/comments/gb31yp/get_tile_index_for_use_in_tilemapset_cellx_y_tile/
+	iter_cells(
+		func(xy):
+			var cell = tilemap.local_to_map(world_origin + Vector2(xy * Vector2i(cell_size, cell_size)))
+			tilemap.set_cell(cell, source_id, true_tile_pos if g(xy) else false_tile_pos)
+	)
+	
+## Tests that all of the cells with the specified value are a single continuous area.
+func is_whole(value: bool = false):
+	var total_empty_cells = data.get_true_bit_count()
+	if !value: total_empty_cells = (size.x * size.y) - total_empty_cells
+
+	var hit_positions: Array[Vector2i] = []
+	return iter_cells(
+		(func(xy):
+			if g(xy) == value:
+				if hit_positions.size() == 0:
+					hit_positions.append(xy)
+				else:
+					if hit_positions.any(func(hit_xy): return (hit_xy - xy).length() == 1):
+						hit_positions.append(xy)
+				if hit_positions.size() == total_empty_cells:
+					return true),
+		false
+	)
+	
+		
 func iter_cells(f: Callable, default = null):
 	for y in size.y:
 		for x in size.x:
