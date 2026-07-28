@@ -54,40 +54,40 @@ func get_cell_offset(layer) -> Vector2i:
 ## of everywhere this stack could be placed.
 func get_ok_placements_on(other: MapLayerStack) -> Array[Placement]:
 	var ok_positions: Array[Placement] = []
-	for side in range(1, 5):
+	for side in 5:
 		
 		# TODO: via clever algebra, distill all these side pickers,
 		# perhaps even globally, into a simple formula
 		var x_start: int
-		if side == 1 or side == 4:
+		if side == 0 or side == 3:
 			x_start = 0
-		elif side == 2:
+		elif side == 1:
 			x_start = size.y
-		elif side == 3:
+		elif side == 2:
 			x_start = size.x
 			
 		var x_end: int
-		if side == 1:
+		if side == 0:
 			x_end = other.size.x - size.x
-		elif side == 2 or side == 4:
+		elif side == 1 or side == 3:
 			x_end = other.size.x - size.y
-		elif side == 3:
+		elif side == 2:
 			x_end = other.size.x
 			
 		var y_start: int
-		if side == 1 or side == 2:
+		if side == 0 or side == 1:
 			y_start = 0
-		elif side == 3:
+		elif side == 2:
 			y_start = size.y
-		elif side == 4:
+		elif side == 3:
 			y_start = size.x
 			
 		var y_end: int
-		if side == 1:
+		if side == 0:
 			y_end = other.size.y - size.y
-		elif side == 2:
+		elif side == 1:
 			y_end = other.size.y - size.x
-		elif side == 3 or side == 4:
+		elif side == 2 or side == 3:
 			y_end = other.size.y
 
 		for y in range(y_start, y_end):

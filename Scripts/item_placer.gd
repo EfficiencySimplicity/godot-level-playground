@@ -41,7 +41,7 @@ func attempt_place(parent: Node2D, map_stack: MapLayerStack) -> bool:
 
 	parent.add_child(self)
 	global_position = my_position
-	rotation_degrees = pos.side * 90 - 90
+	rotation_degrees = pos.side * 90
 	stack.place(map_stack, pos)
 	return true
 
@@ -84,32 +84,3 @@ func _compile() -> PlacementStack:
 		layers["MustBeEmpty"] = must_be_empty_layer
 	
 	return PlacementStack.from_placement_layers(layers)
-			
-func place(parent: Node2D, stack: PlacementStack, dest: MapLayerStack, pos: Placement):
-	# This is where the top left corner of the PlacementStack is in world space
-	var world_position = dest.cell_to_world(pos.position)
-	# This is how far away the stack is from me in world space
-	var stack_offset = (stack.world_origin - global_position)
-	# we add this, rotated correctly to the world position
-	var my_position = world_position - Vector2(pos.map_vector2i(stack_offset))
-	# get the center of that cell
-	my_position += Vector2(dest.layers.values()[0].cell_size / 2, dest.layers.values()[0].cell_size / 2)
-	# go to the proper corner and place!
-	my_position += Vector2(pos.map_vector2i(Vector2i(-dest.layers.values()[0].cell_size / 2, -dest.layers.values()[0].cell_size / 2)))
-	
-	# if this is confusing, imagine a stack, and associated sprites,
-	# that starts 1 to the right and 1 down from the object origin
-	# (weird, but ok)
-	
-	# so the stack_offset is (64, 64)
-	
-	# also, say the world dest in the map is (100, 200)
-	
-	# so the stack needs to be at 100, 200
-	# so the world position of the object needs to be at (100, 200) - (64, 64),
-	# or (36, 136)
-
-	parent.add_child(self)
-	global_position = my_position
-	rotation_degrees = pos.side * 90 - 90
-	stack.place(dest, pos)

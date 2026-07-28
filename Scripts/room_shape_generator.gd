@@ -24,26 +24,26 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 	var old_rect = old_room.shape
 	var new_rect = create_rect(min_size, max_size)
 	
-	var side = randi_range(1, 4)
+	var side = randi_range(0, 3)
 
 	# An extension the same size as the rect is odd
-	if side % 2 == 0:
+	if side % 2 != 0:
 		new_rect.size.y = min(new_rect.size.y, old_rect.size.y)
 	else:
 		new_rect.size.x = min(new_rect.size.x, old_rect.size.x)
 	
 	var new_room = create_collision_shape(new_rect)
 	
-	if side == 1:# top
+	if side == Placement.Side.Up:
 		new_room.position.x = old_room.position.x
 		new_room.position.y = old_room.position.y - new_rect.size.y
-	if side == 2:# right
+	if side == Placement.Side.Right:
 		new_room.position.x = old_room.position.x + old_rect.size.x
 		new_room.position.y = old_room.position.y
-	if side == 3:# bottom
+	if side == Placement.Side.Down:
 		new_room.position.x = old_room.position.x
 		new_room.position.y = old_room.position.y + old_rect.size.y
-	if side == 4:# left
+	if side == Placement.Side.Left:
 		new_room.position.x = old_room.position.x - new_rect.size.x
 		new_room.position.y = old_room.position.y
 		
@@ -94,3 +94,9 @@ func _ready():
 		place_element(elements.get_element(), stack)
 		
 	get_solids_layer().stamp_on_tilemap(owner.find_child("Floor"), 0, Vector2i(1, 0), Vector2i(0, 0))
+	
+	for i in range(20):
+		var p = Placement.new(Vector2i(0, 0), randi_range(0, 3))
+		print(p.side)
+		var v = Vector2i(2, -1)
+		print(p.map_vector2i(v), " ", Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)), p.map_vector2i(v) == Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)))

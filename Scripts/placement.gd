@@ -1,25 +1,16 @@
 class_name Placement
 
-var position: Vector2i
-var side: int
+enum Side {Up = 0, Right = 1, Down = 2, Left = 3}
 
-func _init(_position: Vector2i, _side: int = 1):
+var position: Vector2i
+var side: Placement.Side
+
+func _init(_position: Vector2i, _side: Placement.Side = Side.Up):
 	position = _position
 	side = _side
+
+func map_vector2(v: Vector2) -> Vector2:
+	return v.rotated(deg_to_rad(side * 90)) + Vector2(position)
 	
 func map_vector2i(v: Vector2i) -> Vector2i:
-	# say a vector of (2, -1)
-	# meaning pointing up and right
-	# and it is rotated
-	if side == 1:
-		# no rotation; (2, -1)
-		return position + v
-	elif side == 2:
-		# pointing right; (1, 2)
-		return position + Vector2i(-v.y, v.x)
-	elif side == 3:
-		# pointing down; (-2, 1)
-		return position + Vector2i(-v.x, -v.y)
-	else:
-		# pointing left; (-1, -2)
-		return position + Vector2i(v.y, -v.x)
+	return Vector2i(map_vector2(Vector2(v)).round())
