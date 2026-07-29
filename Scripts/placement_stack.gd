@@ -4,9 +4,7 @@ class_name PlacementStack
 
 var layers: Dictionary[String, PlacementLayer]
 
-# it would be better to store smaller maps and offsets,
-# but really, how much better?
-var world_origin: Vector2
+var world_bounds: Rect2
 var size: Vector2i
 
 static func from_placement_layers(_layers: Dictionary[String, PlacementLayer]):
@@ -16,28 +14,10 @@ static func from_placement_layers(_layers: Dictionary[String, PlacementLayer]):
 	_array.assign(_layers.values().map(func(x): return x.old_layer))
 	var bounds = MapLayer.get_group_bounds(_array)
 	
-	stack.world_origin = bounds.position
+	stack.world_bounds = bounds
 	stack.size = Vector2i(bounds.size / _layers.values()[0].cell_size)
 	
 	return stack
-	
-#
-#static func from_area_2ds(_solids: Area2D, _must_be_solids: Area2D, cell_size: int = 64) -> PlacementStack:
-	#var stack = PlacementStack.new()
-	#stack.solids = MapLayer.from_area2d(_solids, cell_size) if _solids != null else null
-	#stack.must_be_solids =  MapLayer.from_area2d(_must_be_solids, cell_size) if _must_be_solids != null else null
-	#
-	#var all_layers: Array[MapLayer] = []
-	#if stack.solids != null:
-		#all_layers.append(stack.solids)
-	#if stack.must_be_solids != null:
-		#all_layers.append(stack.must_be_solids)
-	#var group_bounds = MapLayer.get_group_bounds(all_layers)
-	#
-	#stack.world_origin = group_bounds.position
-	#stack.size = Vector2i(group_bounds.size / cell_size)
-	#
-	#return stack
 	
 ## Takes in the placement of the stack and tells you
 ## the placement of the individual layer, which has the
@@ -48,7 +28,7 @@ func get_match_position(pos: Placement, layer) -> Placement:
 ## Returns the untranslated offset in world space of this layer
 ## relative to the origin of the stack
 func get_cell_offset(layer) -> Vector2i:
-	return Vector2i((layer.world_origin - world_origin) / layer.cell_size)
+	return Vector2i((layer.world_bounds.position - world_bounds.position) / layer.cell_size)
 
 ## Tests all positions and orientations and returns an array
 ## of everywhere this stack could be placed.

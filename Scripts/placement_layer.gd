@@ -12,7 +12,7 @@ func _init(layer: MapLayer, _target_layers: Dictionary[String, Callable], _place
 	size = layer.size
 	data = layer.data
 	cell_size = layer.cell_size
-	world_origin = layer.world_origin
+	world_bounds = layer.world_bounds
 	target_layers = _target_layers
 	placement_layers = _placement_layers
 	

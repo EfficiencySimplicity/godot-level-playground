@@ -8,7 +8,7 @@ var data: BitMap
 ## The width and height of the MapLayer
 var size: Vector2i
 ## The position of the top left corner of the MapLayer in world space, for placing things easily
-var world_origin: Vector2
+var world_bounds: Rect2
 ## The size in world space of each cell in the MapLayer
 var cell_size: int = 64
 
@@ -22,38 +22,31 @@ func copy() -> MapLayer:
 	var m = MapLayer.new(Vector2(1, 1))
 	m.data = data.duplicate()
 	m.size = size
-	m.world_origin = world_origin
+	m.world_bounds = world_bounds
 	m.cell_size = cell_size
 	return m
 
-## Creates a MapLayer from a bounding rect (world space
+## Creates a MapLayer from a bounding rect (world space)
 static func from_rect(rect: Rect2, _cell_size: int = 64, fill: bool = false) -> MapLayer:
 	var map_layer = MapLayer.new(rect.size / _cell_size, fill)
-	map_layer.world_origin = rect.position
+	map_layer.world_bounds = rect
 	return map_layer
-	
-# This could be a Rect2i...
-func get_world_rect() -> Rect2:
-	return Rect2(world_origin, size * cell_size)
 	
 static func from_layers(layers: Array) -> MapLayer:
 	var bounds = get_group_bounds(layers)
 	var _cell_size = layers[0].cell_size
 	
 	var map_layer = MapLayer.new(bounds.size / _cell_size)
-	map_layer.world_origin = bounds.position
+	map_layer.world_bounds = bounds
 	map_layer.cell_size = _cell_size
 	
 	for layer in layers:
-		layer.place_on(map_layer, Placement.new((layer.world_origin - bounds.position) / _cell_size))
+		layer.place_on(map_layer, Placement.new((layer.world_bounds.position - bounds.position) / _cell_size))
 	
 	return map_layer
 	
-static func get_group_bounds(layers: Array[MapLayer]) -> Rect2:
-	var rect : Rect2 = Rect2()
-	for layer in layers:
-		rect = rect.merge(layer.get_world_rect())
-	return rect
+static func get_group_bounds(layers: Array) -> Rect2:
+	return layers.reduce(func(rect, layer): return rect.merge(layer.world_bounds), Rect2())
 	
 # The cell size could be a custom Node Type; say... PlacementLayer? could be different from MapLayer or something
 static func from_collision_shape(shape: CollisionShape2D, _cell_size: int) -> MapLayer:
@@ -64,18 +57,15 @@ static func from_collision_shape(shape: CollisionShape2D, _cell_size: int) -> Ma
 static func from_area2d(area: Area2D, _cell_size: int = 64) -> MapLayer:
 	if area == null:
 		return null
-		
-	var minis: Array[MapLayer] = []
-	
+
 	var children = area.get_children().filter(func(x): return x is CollisionShape2D and x.shape != null)
 	
-	if children.size() == 0:
+	if children.is_empty():
 		return null
-		
-	for shape in children:
-		minis.append(MapLayer.from_collision_shape(shape, _cell_size))
-			
-	return MapLayer.from_layers(minis)
+
+	return MapLayer.from_layers(
+		children.map(func(shape): return MapLayer.from_collision_shape(shape, _cell_size))
+	)
 
 
 ## Gets an value from the MapLayer
@@ -88,7 +78,7 @@ func s(pos: Vector2i, value: bool):
 
 ## Returns the top left corner of the specified cell in world space
 func cell_to_world(pos: Vector2i):
-	return world_origin + Vector2(pos * cell_size)
+	return world_bounds.position + Vector2(pos * cell_size)
 	
 ## Stamps this MapLayer on another, overwriting all values within its area
 func stamp_on(other: MapLayer, pos: Placement):
@@ -145,7 +135,7 @@ func inverted() -> MapLayer:
 	new_layer.data = new_data
 	new_layer.size = size
 	new_layer.cell_size = cell_size
-	new_layer.world_origin = world_origin
+	new_layer.world_bounds = world_bounds
 	
 	return new_layer
 	
@@ -156,7 +146,7 @@ func place_on_tilemap(tilemap: TileMapLayer, source_id: int = -1, tile_pos: Vect
 		func(xy):
 			if !g(xy):
 				return
-			var cell = tilemap.local_to_map(world_origin + Vector2(xy * Vector2i(cell_size, cell_size)))
+			var cell = tilemap.local_to_map(world_bounds.position + Vector2(xy * Vector2i(cell_size, cell_size)))
 			tilemap.set_cell(cell, source_id, tile_pos)
 	)
 	
@@ -164,7 +154,7 @@ func stamp_on_tilemap(tilemap: TileMapLayer, source_id: int = -1, true_tile_pos:
 	# https://www.reddit.com/r/godot/comments/gb31yp/get_tile_index_for_use_in_tilemapset_cellx_y_tile/
 	iter_cells(
 		func(xy):
-			var cell = tilemap.local_to_map(world_origin + Vector2(xy * Vector2i(cell_size, cell_size)))
+			var cell = tilemap.local_to_map(world_bounds.position + Vector2(xy * Vector2i(cell_size, cell_size)))
 			tilemap.set_cell(cell, source_id, true_tile_pos if g(xy) else false_tile_pos)
 	)
 	

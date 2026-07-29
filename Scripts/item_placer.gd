@@ -19,7 +19,7 @@ func attempt_place(parent: Node2D, map_stack: MapLayerStack) -> bool:
 	# This is where the top left corner of the PlacementStack is in world space
 	var world_position = map_stack.cell_to_world(pos.position)
 	# This is how far away the stack is from me in world space
-	var stack_offset = (stack.world_origin - global_position)
+	var stack_offset = (stack.world_bounds.position - global_position)
 	# we add this, rotated correctly to the world position
 	var my_position = world_position - Vector2(pos.map_vector2i(stack_offset))
 	# get the center of that cell

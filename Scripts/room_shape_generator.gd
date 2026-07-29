@@ -61,7 +61,7 @@ func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
 	var layer = MapLayer.from_area2d(self, 64).inverted()
 	var solids_layer = MapLayer.new(layer.size + Vector2i(2, 2), true)
-	solids_layer.world_origin = layer.world_origin - Vector2(64, 64)
+	solids_layer.world_bounds = layer.world_bounds.grow(64)
 	layer.stamp_on(solids_layer, Placement.new(Vector2i(1, 1)))
 	
 	return solids_layer
