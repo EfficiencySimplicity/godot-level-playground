@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://dkripvdutw57v"]
 
-[ext_resource type="PackedScene" uid="uid://d3vkeu8bqwqg3" path="res://Scenes/room_shape_generator.tscn" id="1_tam23"]
+[ext_resource type="PackedScene" uid="uid://d3vkeu8bqwqg3" path="res://Scenes/room_generator.tscn" id="1_tam23"]
 [ext_resource type="Texture2D" uid="uid://bxav4rgy06bqu" path="res://Art/demo_wall_floor.png" id="1_wyk58"]
 [ext_resource type="PackedScene" uid="uid://yuk7707swaiy" path="res://Scenes/locker.tscn" id="2_1clf0"]
 [ext_resource type="PackedScene" uid="uid://dg274dgxm8udd" path="res://Scenes/table.tscn" id="3_0u5ym"]
 [ext_resource type="Script" uid="uid://c11lg1h47ilqr" path="res://Scripts/element_set.gd" id="3_dg8kd"]
 [ext_resource type="PackedScene" uid="uid://cotse7q4g2p5l" path="res://Scenes/desk.tscn" id="4_0u5ym"]
+[ext_resource type="Script" uid="uid://dkcyps1y254to" path="res://Scripts/player_mover.gd" id="7_78y3u"]
+[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="7_k0nfe"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k0nfe"]
 texture = ExtResource("1_wyk58")
@@ -27,8 +29,22 @@ metadata/_custom_type_script = "uid://c11lg1h47ilqr"
 [node name="Floor" type="TileMapLayer" parent="." unique_id=1820883551]
 tile_set = SubResource("TileSet_krb5w")
 
+[node name="Walls" type="TileMapLayer" parent="." unique_id=1785126093]
+tile_set = SubResource("TileSet_krb5w")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1648027803]
 zoom = Vector2(0.1, 0.1)
 
 [node name="RoomShapeGenerator" parent="." unique_id=1217838495 instance=ExtResource("1_tam23")]
 elements = SubResource("Resource_tam23")
+
+[node name="PlayerMover" type="Node2D" parent="." unique_id=668468931]
+position = Vector2(32, 32)
+script = ExtResource("7_78y3u")
+
+[node name="RayCast2D" type="RayCast2D" parent="PlayerMover" unique_id=1053284335]
+target_position = Vector2(64, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerMover" unique_id=1062190360]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("7_k0nfe")

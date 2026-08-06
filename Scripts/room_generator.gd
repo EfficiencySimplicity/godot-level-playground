@@ -74,8 +74,8 @@ func get_map_stack() -> MapLayerStack:
 	var stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "MustBeEmpty": must_be_empty_layer})
 	
 	return stack
-
-func generate():
+	
+func generate_room():
 	var shape = create_collision_shape(create_rect(Vector2i(4, 4), Vector2i(8, 8)))
 	print("I created a collision shape with shape ", shape.shape.size)
 	var shape_2 = extend_room(shape, Vector2i(4, 4), Vector2i(8, 8))
@@ -84,19 +84,25 @@ func generate():
 	print("I added the first shape; giving it size ", shape.shape.size)
 	add_shape(shape_2)
 	print("I added the second shape; giving it size ", shape_2.shape.size)
-
-func _ready():
-	generate()
+	
+func generate():
+	generate_room()
 
 	var stack = get_map_stack()
+	
+	var solids = get_solids_layer()
+	
+	solids.stamp_on_tilemap(owner.find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
+	solids.stamp_on_tilemap(owner.find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
 
 	for i in 25:
 		place_element(elements.get_element(), stack)
-		
-	get_solids_layer().stamp_on_tilemap(owner.find_child("Floor"), 0, Vector2i(1, 0), Vector2i(0, 0))
 	
 	for i in range(20):
 		var p = Placement.new(Vector2i(0, 0), randi_range(0, 3))
 		print(p.side)
 		var v = Vector2i(2, -1)
 		print(p.map_vector2i(v), " ", Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)), p.map_vector2i(v) == Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)))
+
+func _ready():
+	generate()

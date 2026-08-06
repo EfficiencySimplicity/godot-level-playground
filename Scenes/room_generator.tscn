@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d3vkeu8bqwqg3"]
 
-[ext_resource type="Script" uid="uid://cp1h8f52fvt1j" path="res://Scripts/room_shape_generator.gd" id="1_shawt"]
+[ext_resource type="Script" uid="uid://cp1h8f52fvt1j" path="res://Scripts/room_generator.gd" id="1_a61x6"]
 [ext_resource type="PackedScene" uid="uid://cotse7q4g2p5l" path="res://Scenes/desk.tscn" id="2_v0m8e"]
 [ext_resource type="PackedScene" uid="uid://dg274dgxm8udd" path="res://Scenes/table.tscn" id="3_k11pq"]
 [ext_resource type="PackedScene" uid="uid://yuk7707swaiy" path="res://Scenes/locker.tscn" id="4_vtgkf"]
@@ -11,6 +11,6 @@ script = ExtResource("5_fdb7k")
 elements = Array[PackedScene]([ExtResource("2_v0m8e"), ExtResource("3_k11pq"), ExtResource("4_vtgkf")])
 metadata/_custom_type_script = "uid://c11lg1h47ilqr"
 
-[node name="RoomShapeGenerator" type="Area2D" unique_id=1217838495]
-script = ExtResource("1_shawt")
+[node name="RoomGenerator" type="Area2D" unique_id=1217838495]
+script = ExtResource("1_a61x6")
 elements = SubResource("Resource_l85en")
