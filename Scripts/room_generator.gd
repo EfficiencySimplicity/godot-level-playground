@@ -1,6 +1,7 @@
 extends Area2D
 
 @export var elements: ElementSet
+@export var gen_on_ready: bool = false
 
 func create_rect(min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> RectangleShape2D:
 	var rect = RectangleShape2D.new()
@@ -50,12 +51,8 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 	return new_room
 	
 func place_element(element: ItemPlacer, map_stack: MapLayerStack):
-	print("I'm going to try to place ", element.name)
 	# creates the PlacementStack
-	if element.attempt_place(self, map_stack):
-		print("I couldn't place ", element.name)
-	else:
-		print("I placed the element")
+	element.attempt_place(self, map_stack)
 	
 func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
@@ -92,17 +89,12 @@ func generate():
 	
 	var solids = get_solids_layer()
 	
-	solids.stamp_on_tilemap(owner.find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
-	solids.stamp_on_tilemap(owner.find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
+	solids.stamp_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
+	solids.stamp_on_tilemap(get_parent().find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
 
 	for i in 25:
 		place_element(elements.get_element(), stack)
-	
-	for i in range(20):
-		var p = Placement.new(Vector2i(0, 0), randi_range(0, 3))
-		print(p.side)
-		var v = Vector2i(2, -1)
-		print(p.map_vector2i(v), " ", Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)), p.map_vector2i(v) == Vector2i(Vector2(v).rotated(deg_to_rad(p.side * 90)).round() + Vector2(p.position)))
 
 func _ready():
-	generate()
+	if gen_on_ready:
+		generate()

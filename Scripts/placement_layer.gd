@@ -18,10 +18,10 @@ func _init(layer: MapLayer, _target_layers: Dictionary[String, Callable], _place
 	
 	old_layer = layer
 	
-	print("Placement Layer created:")
-	print(old_layer)
-	print("Target layers: ", target_layers)
-	print("Placement layers: ", placement_layers)
+	#print("Placement Layer created:")
+	#print(old_layer)
+	#print("Target layers: ", target_layers)
+	#print("Placement layers: ", placement_layers)
 
 func test_placeable(stack: MapLayerStack, pos: Placement) -> bool:
 	for layer in target_layers:

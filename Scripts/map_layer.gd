@@ -46,7 +46,7 @@ static func from_layers(layers: Array) -> MapLayer:
 	return map_layer
 	
 static func get_group_bounds(layers: Array) -> Rect2:
-	return layers.reduce(func(rect, layer): return rect.merge(layer.world_bounds), Rect2())
+	return layers.reduce(func(rect, layer): return rect.merge(layer.world_bounds), layers[0].world_bounds)
 	
 # The cell size could be a custom Node Type; say... PlacementLayer? could be different from MapLayer or something
 static func from_collision_shape(shape: CollisionShape2D, _cell_size: int) -> MapLayer:
