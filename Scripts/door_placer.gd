@@ -1,0 +1,1 @@
+class_name DoorPlacer extends ItemPlacer

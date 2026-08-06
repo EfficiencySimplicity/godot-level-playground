@@ -52,9 +52,13 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 	
 		# Places it, accounting for all the offsets globally (using self),
 		# and fills in the maps by reference
-		var test_dest = map_stack.layers["Solids"].copy()
-		stack.layers["Solids"].old_layer.place_on(test_dest, stack.get_match_position(pos, stack.layers["Solids"]))
-		if test_dest.is_whole():
+		# https://www.reddit.com/r/godot/comments/cgw8w8/how_to_check_if_a_key_exists_in_a_dictionary_in/
+		if stack.layers.has("Solids"):
+			var test_dest = map_stack.layers["Solids"].copy()
+			stack.layers["Solids"].old_layer.place_on(test_dest, stack.get_match_position(pos, stack.layers["Solids"]))
+			if test_dest.is_whole():
+				return pos
+		else:
 			return pos
 			
 	return null

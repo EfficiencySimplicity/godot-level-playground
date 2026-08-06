@@ -1,8 +1,11 @@
 extends Node2D
 
+@export var num_rooms: int = 16
+@export var room_gap: int = 50
+@export var doors_per_room: int = 2
+
 @onready var room_generator = preload("res://Scenes/room_generator.tscn")
-@export var num_rooms: int
-@export var room_gap: int
+@onready var door = preload("res://Scenes/door.tscn")
 
 func _ready():
 	var grid_width = int(floor(sqrt(num_rooms)))
@@ -20,4 +23,10 @@ func _ready():
 	
 		rooms.append(room)
 		
-	rooms.map(func(x): x.generate())
+	rooms.map(func(x): x.generate_room_shape())
+	rooms.map(func(x): x.stamp_room_shape())
+	rooms.map(func(x):
+		for i in doors_per_room:
+			x.place_element(door.instantiate())
+	)
+	rooms.map(func(x): x.generate_items())

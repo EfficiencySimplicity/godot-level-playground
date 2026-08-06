@@ -3,6 +3,8 @@ extends Area2D
 @export var elements: ElementSet
 @export var gen_on_ready: bool = false
 
+var stack: MapLayerStack
+
 func create_rect(min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> RectangleShape2D:
 	var rect = RectangleShape2D.new()
 	rect.size = Vector2(randi_range(min_size.x, max_size.x), randi_range(min_size.y, max_size.y))
@@ -50,9 +52,9 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 		
 	return new_room
 	
-func place_element(element: ItemPlacer, map_stack: MapLayerStack):
+func place_element(element: ItemPlacer):
 	# creates the PlacementStack
-	element.attempt_place(self, map_stack)
+	element.attempt_place(self, stack)
 	
 func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
@@ -63,16 +65,14 @@ func get_solids_layer() -> MapLayer:
 	
 	return solids_layer
 	
-func get_map_stack() -> MapLayerStack:
+func get_map_stack():
 	var solids_layer = get_solids_layer()
 	
 	var must_be_empty_layer = MapLayer.new(solids_layer.size)
 	
-	var stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "MustBeEmpty": must_be_empty_layer})
+	stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "MustBeEmpty": must_be_empty_layer})
 	
-	return stack
-	
-func generate_room():
+func generate_room_shape():
 	var shape = create_collision_shape(create_rect(Vector2i(4, 4), Vector2i(8, 8)))
 	print("I created a collision shape with shape ", shape.shape.size)
 	var shape_2 = extend_room(shape, Vector2i(4, 4), Vector2i(8, 8))
@@ -82,19 +82,23 @@ func generate_room():
 	add_shape(shape_2)
 	print("I added the second shape; giving it size ", shape_2.shape.size)
 	
-func generate():
-	generate_room()
-
-	var stack = get_map_stack()
+	get_map_stack()
 	
+func stamp_room_shape():
 	var solids = get_solids_layer()
 	
 	solids.stamp_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
 	solids.stamp_on_tilemap(get_parent().find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
-
+	
+func generate_items():
 	for i in 25:
-		place_element(elements.get_element(), stack)
+		place_element(elements.get_element())
 
+func generate():
+	generate_room_shape()
+	stamp_room_shape()
+	generate_items()
+	
 func _ready():
 	if gen_on_ready:
 		generate()

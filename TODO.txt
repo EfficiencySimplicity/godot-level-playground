@@ -1,0 +1,37 @@
+- Currently doors place well!
+
+But they do not clear the block under them AND
+there is the issue of rooms always being square, i.e. the walls are thicker in some parts.
+Obviously not the cleanest, but an issue.
+I mean, collision when walking thru doors shouldn't be bad; we check in the OTHER room.
+So I should connect doors and add teleportation before fixing all this.
+
+If we DO clear it out so there are nice walls, then room items could place outta the room.
+Not what we want. Could be an additional layer for TOTAL SOLID but NOT WALL,
+But more likely I'll just get a special one-time layer to use for the stamping;
+
+I think something like 1-layer-per-collider will give us these:
+	
+00000
+01110
+01110
+01110
+01110
+00000
+
+and
+
+0000000000
+0111111110
+0111111110
+0111111110
+0000000000
+
+(with of course padding). Then-voila, we PLACE onto a-hmm.
+
+If we overlay the two they'll intersect; wall-value inside room-value should not place, so...
+- a room-enclosing grid of X,
+- 2 mini-layers with center X and outside Y,
+- That place the Y,
+- Then place themselves UNbordered,
+- thus getting a correct map!
