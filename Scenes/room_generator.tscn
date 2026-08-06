@@ -12,5 +12,7 @@ elements = Array[PackedScene]([ExtResource("2_v0m8e"), ExtResource("3_k11pq"), E
 metadata/_custom_type_script = "uid://c11lg1h47ilqr"
 
 [node name="RoomGenerator" type="Area2D" unique_id=1217838495]
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("1_a61x6")
 elements = SubResource("Resource_l85en")

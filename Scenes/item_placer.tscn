@@ -17,12 +17,16 @@ position = Vector2(-32, -32)
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="MustBeSolids" type="Area2D" parent="Placement" unique_id=538475917]
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/MustBeSolids" unique_id=2018220721]
 position = Vector2(32, -32)
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="MustBeEmpty" type="Area2D" parent="Placement" unique_id=1959477447]
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/MustBeEmpty" unique_id=1239424687]
 position = Vector2(-32, 32)

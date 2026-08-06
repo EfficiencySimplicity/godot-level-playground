@@ -13,10 +13,13 @@
 texture = ExtResource("1_wyk58")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
 1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(32, -32, 32, 32, -32, 32, -32, -32)
 
 [sub_resource type="TileSet" id="TileSet_krb5w"]
 tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_k0nfe")
 
 [sub_resource type="Resource" id="Resource_tam23"]
@@ -27,13 +30,11 @@ metadata/_custom_type_script = "uid://c11lg1h47ilqr"
 [node name="TestingGround" type="Node2D" unique_id=1366896337]
 
 [node name="Floor" type="TileMapLayer" parent="." unique_id=1820883551]
+enabled = false
 tile_set = SubResource("TileSet_krb5w")
 
 [node name="Walls" type="TileMapLayer" parent="." unique_id=1785126093]
 tile_set = SubResource("TileSet_krb5w")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1648027803]
-zoom = Vector2(0.1, 0.1)
 
 [node name="RoomShapeGenerator" parent="." unique_id=1217838495 instance=ExtResource("1_tam23")]
 elements = SubResource("Resource_tam23")
@@ -42,8 +43,11 @@ elements = SubResource("Resource_tam23")
 position = Vector2(32, 32)
 script = ExtResource("7_78y3u")
 
+[node name="Camera2D" type="Camera2D" parent="PlayerMover" unique_id=1648027803]
+
 [node name="RayCast2D" type="RayCast2D" parent="PlayerMover" unique_id=1053284335]
 target_position = Vector2(64, 0)
+collide_with_areas = true
 
 [node name="Sprite2D" type="Sprite2D" parent="PlayerMover" unique_id=1062190360]
 scale = Vector2(0.3, 0.3)
