@@ -58,7 +58,7 @@ func place_element(element: ItemPlacer):
 	
 func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
-	return MapLayer.from_area2d(self, 64).inverted().bordered(true)
+	return MapLayer.from_shapes2d(self, 64).inverted().bordered(true)
 	
 func get_walls_layer() -> MapLayer:
 	var blocks = get_children().filter(func(x): return x is CollisionShape2D and x.shape != null).map(func(shape): return MapLayer.from_collision_shape(shape, 64).inverted())

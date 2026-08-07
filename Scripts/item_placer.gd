@@ -1,8 +1,10 @@
 class_name ItemPlacer extends Node2D
 
-@export var _solids: Area2D
-@export var _must_be_solids: Area2D
-@export var _must_be_empty: Area2D
+@export var _solids: CollisionObject2D
+@export var _must_be_solids: CollisionObject2D
+@export var _must_be_empty: CollisionObject2D
+
+@export var tiles: Array[TileStamper]
 
 # TODO: the whole placement thing in a single loop! so this obj never exposes its placement
 # and it self-deletes, maybe returning a bool if successful.
@@ -43,6 +45,10 @@ func attempt_place(parent: Node2D, map_stack: MapLayerStack) -> bool:
 	global_position = my_position
 	rotation_degrees = pos.side * 90
 	stack.place(map_stack, pos)
+	
+	for layer in tiles:
+		layer.stamp(parent.get_parent().tile_map_layers[layer.dest_name])
+		
 	return true
 
 func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerStack, ok_placements: Array[Placement]):
@@ -67,20 +73,20 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 func _compile() -> PlacementStack:
 	var layers: Dictionary[String, PlacementLayer]
 	
-	var _solids_layer = MapLayer.from_area2d(_solids)
+	var _solids_layer = MapLayer.from_shapes2d(_solids)
 	if _solids_layer != null:
 		var solids_layer = PlacementLayer.new(_solids_layer, 
 			{"Solids": _solids_layer.doesnt_collide, "MustBeEmpty": _solids_layer.doesnt_collide},
 			{"Solids": _solids_layer.place_on})
 		layers["Solids"] = solids_layer
 		
-	var _must_be_solids_layer = MapLayer.from_area2d(_must_be_solids)
+	var _must_be_solids_layer = MapLayer.from_shapes2d(_must_be_solids)
 	if _must_be_solids_layer != null:
 		var must_be_solids_layer = PlacementLayer.new(_must_be_solids_layer, 
 			{"Solids": _must_be_solids_layer.overlaps})
 		layers["MustBeSolids"] = must_be_solids_layer
 		
-	var _must_be_empty_layer = MapLayer.from_area2d(_must_be_empty)
+	var _must_be_empty_layer = MapLayer.from_shapes2d(_must_be_empty)
 	if _must_be_empty_layer != null:
 		var must_be_empty_layer = PlacementLayer.new(_must_be_empty_layer, 
 			{"Solids": _must_be_empty_layer.doesnt_collide},

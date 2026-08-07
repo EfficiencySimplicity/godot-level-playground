@@ -4,6 +4,8 @@ extends Node2D
 @export var room_gap: int = 50
 @export var doors_per_room: int = 2
 
+@export var tile_map_layers: Dictionary[String, TileMapLayer]
+
 @onready var room_generator = preload("res://Scenes/room_generator.tscn")
 @onready var door = preload("res://Scenes/door.tscn")
 

@@ -55,17 +55,17 @@ static func from_collision_shape(shape: CollisionShape2D, _cell_size: int) -> Ma
 	return MapLayer.from_rect(bounding_rect, _cell_size, 1)
 	
 ## The MapLayer will be 0 (false) wherever it is outside the room
-static func from_area2d(area: Area2D, _cell_size: int = 64) -> MapLayer:
-	if area == null:
+static func from_shapes2d(collider: CollisionObject2D, _cell_size: int = 64) -> MapLayer:
+	if collider == null:
 		return null
 
-	var children = area.get_children().filter(func(x): return x is CollisionShape2D and x.shape != null)
+	var shapes = collider.get_children().filter(func(x): return x is CollisionShape2D and x.shape != null)
 	
-	if children.is_empty():
+	if shapes.is_empty():
 		return null
 
 	return MapLayer.from_layers(
-		children.map(func(shape): return MapLayer.from_collision_shape(shape, _cell_size))
+		shapes.map(func(shape): return MapLayer.from_collision_shape(shape, _cell_size))
 	)
 
 ## Gets an value from the MapLayer

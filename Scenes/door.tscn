@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_w6aom"]
 [ext_resource type="Script" uid="uid://dto4jcqcxdave" path="res://Scripts/door_placer.gd" id="2_fahql"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_p0e35"]
+[ext_resource type="Script" uid="uid://ytaokkpdfs8" path="res://tile_stamper.gd" id="3_ab4ky"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fahql"]
 size = Vector2(192, 64)
@@ -10,8 +11,12 @@ size = Vector2(192, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ab4ky"]
 size = Vector2(64, 128)
 
-[node name="Door" unique_id=70122258 instance=ExtResource("1_w6aom")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
+size = Vector2(64, 64)
+
+[node name="Door" unique_id=70122258 node_paths=PackedStringArray("tiles") instance=ExtResource("1_w6aom")]
 script = ExtResource("2_fahql")
+tiles = [NodePath("Placement/TileStamper")]
 
 [node name="CollisionShape2D" parent="Placement/MustBeSolids" parent_id_path=PackedInt32Array(538475917) index="0" unique_id=2018220721]
 shape = SubResource("RectangleShape2D_fahql")
@@ -19,6 +24,16 @@ shape = SubResource("RectangleShape2D_fahql")
 [node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]
 position = Vector2(32, 64)
 shape = SubResource("RectangleShape2D_ab4ky")
+
+[node name="TileStamper" type="Area2D" parent="Placement" parent_id_path=PackedInt32Array(412783648) index="3" unique_id=1585183351]
+script = ExtResource("3_ab4ky")
+source_id = -1
+dest_name = "Walls"
+metadata/_custom_type_script = "uid://ytaokkpdfs8"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/TileStamper" index="0" unique_id=834605127]
+position = Vector2(32, -32)
+shape = SubResource("RectangleShape2D_krb5w")
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="1" unique_id=653719424]
 modulate = Color(1, 1, 1, 0.5019608)

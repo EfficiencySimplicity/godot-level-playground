@@ -10,7 +10,7 @@ _must_be_empty = NodePath("Placement/MustBeEmpty")
 
 [node name="Placement" type="Node2D" parent="." unique_id=412783648]
 
-[node name="Solids" type="Area2D" parent="Placement" unique_id=1801023206]
+[node name="Solids" type="StaticBody2D" parent="Placement" unique_id=1890553233]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/Solids" unique_id=1655109649]
 position = Vector2(-32, -32)
