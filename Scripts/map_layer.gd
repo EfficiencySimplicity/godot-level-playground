@@ -32,7 +32,7 @@ static func from_rect(rect: Rect2, _cell_size: int = 64, fill: bool = false) -> 
 	map_layer.world_bounds = rect
 	return map_layer
 	
-static func from_layers(layers: Array) -> MapLayer:
+static func from_layers(layers: Array, stamp: bool = true) -> MapLayer:
 	var bounds = get_group_bounds(layers)
 	var _cell_size = layers[0].cell_size
 	
@@ -40,8 +40,9 @@ static func from_layers(layers: Array) -> MapLayer:
 	map_layer.world_bounds = bounds
 	map_layer.cell_size = _cell_size
 	
-	for layer in layers:
-		layer.place_on(map_layer, Placement.new((layer.world_bounds.position - bounds.position) / _cell_size))
+	if stamp:
+		for layer in layers:
+			layer.place_on(map_layer, Placement.new((layer.world_bounds.position - bounds.position) / _cell_size))
 	
 	return map_layer
 	
@@ -67,7 +68,6 @@ static func from_area2d(area: Area2D, _cell_size: int = 64) -> MapLayer:
 		children.map(func(shape): return MapLayer.from_collision_shape(shape, _cell_size))
 	)
 
-
 ## Gets an value from the MapLayer
 func g(pos: Vector2i) -> bool:
 	return data.get_bitv(pos)
@@ -80,12 +80,18 @@ func s(pos: Vector2i, value: bool):
 func cell_to_world(pos: Vector2i):
 	return world_bounds.position + Vector2(pos * cell_size)
 	
+## gets where this MapLayer's top left corner cell sits on another in its cell space
+func position_on(other: MapLayer) -> Placement:
+	return Placement.new((world_bounds.position - other.world_bounds.position) / cell_size)
+	
 ## Stamps this MapLayer on another, overwriting all values within its area
-func stamp_on(other: MapLayer, pos: Placement):
+func stamp_on(other: MapLayer, pos: Placement = null):
+	if pos == null: pos = position_on(other)
 	iter_cells(func(xy): other.s(pos.map_vector2i(xy), g(xy)))
 			
 ## Places this MapLayer on another, only writing down 1s
-func place_on(other: MapLayer, pos: Placement):
+func place_on(other: MapLayer, pos: Placement = null):
+	if pos == null: pos = position_on(other)
 	iter_cells(
 		func(xy):
 			if g(xy):
@@ -93,7 +99,8 @@ func place_on(other: MapLayer, pos: Placement):
 	)
 
 ## Returns true if the MapLayers contain equal values starting at the specified position
-func matches(other: MapLayer, pos: Placement) -> bool:
+func matches(other: MapLayer, pos: Placement = null) -> bool:
+	if pos == null: pos = position_on(other)
 	return iter_cells(
 		(func(xy):
 			if other.g(pos.map_vector2i(xy)) != g(xy):
@@ -102,7 +109,8 @@ func matches(other: MapLayer, pos: Placement) -> bool:
 	)
 	
 ## Returns true if the MapLayers have at least 1 cell where they're both true
-func collides(other: MapLayer, pos: Placement) -> bool:
+func collides(other: MapLayer, pos: Placement = null) -> bool:
+	if pos == null: pos = position_on(other)
 	return iter_cells(
 		(func(xy): 
 			if other.g(pos.map_vector2i(xy)) and g(xy):
@@ -111,11 +119,13 @@ func collides(other: MapLayer, pos: Placement) -> bool:
 	)
 	
 ## Returns true if the MapLayers do not collide with any 1s
-func doesnt_collide(other: MapLayer, pos: Placement) -> bool:
+func doesnt_collide(other: MapLayer, pos: Placement = null) -> bool:
+	if pos == null: pos = position_on(other)
 	return !collides(other, pos)
 	
 ## Returns true if wherever the MapLayer is true, the other is also
-func overlaps(other: MapLayer, pos: Placement) -> bool:
+func overlaps(other: MapLayer, pos: Placement = null) -> bool:
+	if pos == null: pos = position_on(other)
 	return iter_cells(
 		(func(xy):
 			if g(xy) and not other.g(pos.map_vector2i(xy)):
@@ -138,7 +148,12 @@ func inverted() -> MapLayer:
 	new_layer.world_bounds = world_bounds
 	
 	return new_layer
-	
+
+func bordered(value: bool = false, cell_size: int = 64) -> MapLayer:
+	var expanded = MapLayer.new(size + Vector2i(2, 2), value)
+	expanded.world_bounds = world_bounds.grow(cell_size)
+	stamp_on(expanded, Placement.new(Vector2i(1, 1)))
+	return expanded
 
 func place_on_tilemap(tilemap: TileMapLayer, source_id: int = -1, tile_pos: Vector2i = Vector2i(0, 0)):
 	# https://www.reddit.com/r/godot/comments/gb31yp/get_tile_index_for_use_in_tilemapset_cellx_y_tile/
@@ -170,7 +185,7 @@ func is_whole(value: bool = false):
 				if hit_positions.size() == 0:
 					hit_positions.append(xy)
 				else:
-					if hit_positions.any(func(hit_xy): return (hit_xy - xy).length() == 1):
+					if hit_positions.any(func(hit_xy): return (hit_xy - xy).length_squared() == 1):
 						hit_positions.append(xy)
 				if hit_positions.size() == total_empty_cells:
 					return true),

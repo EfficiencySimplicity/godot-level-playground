@@ -58,12 +58,20 @@ func place_element(element: ItemPlacer):
 	
 func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...
-	var layer = MapLayer.from_area2d(self, 64).inverted()
-	var solids_layer = MapLayer.new(layer.size + Vector2i(2, 2), true)
-	solids_layer.world_bounds = layer.world_bounds.grow(64)
-	layer.stamp_on(solids_layer, Placement.new(Vector2i(1, 1)))
+	return MapLayer.from_area2d(self, 64).inverted().bordered(true)
 	
-	return solids_layer
+func get_walls_layer() -> MapLayer:
+	var blocks = get_children().filter(func(x): return x is CollisionShape2D and x.shape != null).map(func(shape): return MapLayer.from_collision_shape(shape, 64).inverted())
+		
+	var bordered_blocks = blocks.map(func(x): return x.bordered(true))
+	
+	var full_map = MapLayer.from_layers(bordered_blocks)
+	bordered_blocks.map(func(x): x.place_on(full_map))
+	blocks.map(func(x): x.stamp_on(full_map))
+	print("Walls layer:")
+	print(full_map)
+	return full_map
+	
 	
 func get_map_stack():
 	var solids_layer = get_solids_layer()
@@ -85,10 +93,10 @@ func generate_room_shape():
 	get_map_stack()
 	
 func stamp_room_shape():
-	var solids = get_solids_layer()
+	var walls = get_walls_layer()
 	
-	solids.stamp_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
-	solids.stamp_on_tilemap(get_parent().find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
+	walls.stamp_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
+	walls.stamp_on_tilemap(get_parent().find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
 	
 func generate_items():
 	for i in 25:
