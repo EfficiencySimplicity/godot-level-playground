@@ -2,7 +2,7 @@ extends Node2D
 
 @export var num_rooms: int = 16
 @export var room_gap: int = 50
-@export var doors_per_room: int = 2
+@export var doors_per_room_range: Vector2i
 
 @export var tile_map_layers: Dictionary[String, TileMapLayer]
 
@@ -27,8 +27,73 @@ func _ready():
 		
 	rooms.map(func(x): x.generate_room_shape())
 	rooms.map(func(x): x.stamp_room_shape())
-	rooms.map(func(x):
-		for i in doors_per_room:
-			x.place_element(door.instantiate())
-	)
+	connect_doors(rooms, place_doors(rooms))
+	print("Doors connected!")
 	rooms.map(func(x): x.generate_items())
+	
+func place_doors(rooms):
+	var doors: Array[DoorPlacer] = []
+	
+	rooms.map(func(x):
+		var num_doors = randi_range(doors_per_room_range.x, doors_per_room_range.y)
+		
+		# If we are on the last room, make sure we end up with an even number
+		# of doors in the world after this
+		if x == rooms[-1]:
+			if (doors.size() + num_doors) % 2 != 0:
+				num_doors += 1
+				
+		for i in num_doors:
+			var door_obj = door.instantiate()
+			assert(x.place_element(door_obj), "A door could not be placed!!!")
+			
+			doors.append(door_obj)
+	)
+	
+	return doors
+
+# 1-door rooms, an abundance of such, could cause problems...
+func connect_doors(rooms, doors: Array[DoorPlacer]):
+	var remaining_rooms = rooms.duplicate()
+	var available_doors = []
+
+	remaining_rooms.erase(rooms[0])
+	available_doors.append_array(get_doors_of_room(rooms[0], doors))
+	
+	while remaining_rooms.size() > 0:
+		var room_to_connect
+		var other_doors
+		
+		# Make sure we don't deadend ourselves
+		# this could technically go on forever, TODO
+		while true:
+			room_to_connect = remaining_rooms.pick_random()
+			other_doors = get_doors_of_room(room_to_connect, doors)
+			
+			if other_doors.size() + available_doors.size() - 2 > 0:
+				break
+			
+		var door_to_connect_to = other_doors.pick_random()
+		
+		var door_to_connect = available_doors.pick_random()
+		
+		door_to_connect.actual_door.connect_door(door_to_connect_to.actual_door)
+		
+		other_doors.erase(door_to_connect_to)
+		available_doors.erase(door_to_connect)
+		
+		available_doors.append_array(other_doors)		
+		remaining_rooms.erase(room_to_connect)
+		
+	while available_doors.size() > 0:
+		var door_a = available_doors.pick_random()
+		available_doors.erase(door_a)
+		var door_b = available_doors.pick_random()
+		available_doors.erase(door_b)
+		
+		door_a.actual_door.connect_door(door_b.actual_door)
+		
+		
+	
+func get_doors_of_room(room, doors):
+	return doors.filter(func(x): return x.get_parent() == room)

@@ -52,9 +52,9 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 		
 	return new_room
 	
-func place_element(element: ItemPlacer):
+func place_element(element: ItemPlacer) -> bool:
 	# creates the PlacementStack
-	element.attempt_place(self, stack)
+	return element.attempt_place(self, stack)
 	
 func get_solids_layer() -> MapLayer:
 	# TODO: there must be a way to set the fill of the area2d...

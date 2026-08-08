@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dto4jcqcxdave" path="res://Scripts/door_placer.gd" id="2_fahql"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_p0e35"]
 [ext_resource type="Script" uid="uid://ytaokkpdfs8" path="res://tile_stamper.gd" id="3_ab4ky"]
+[ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Scripts/door.gd" id="4_a43ba"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fahql"]
 size = Vector2(192, 64)
@@ -14,8 +15,9 @@ size = Vector2(64, 128)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
 size = Vector2(64, 64)
 
-[node name="Door" unique_id=70122258 node_paths=PackedStringArray("tiles") instance=ExtResource("1_w6aom")]
+[node name="Door" unique_id=70122258 node_paths=PackedStringArray("actual_door", "tiles") instance=ExtResource("1_w6aom")]
 script = ExtResource("2_fahql")
+actual_door = NodePath("Door")
 tiles = [NodePath("Placement/TileStamper")]
 
 [node name="CollisionShape2D" parent="Placement/MustBeSolids" parent_id_path=PackedInt32Array(538475917) index="0" unique_id=2018220721]
@@ -35,7 +37,10 @@ metadata/_custom_type_script = "uid://ytaokkpdfs8"
 position = Vector2(32, -32)
 shape = SubResource("RectangleShape2D_krb5w")
 
-[node name="Sprite2D" type="Sprite2D" parent="." index="1" unique_id=653719424]
+[node name="Door" type="Node2D" parent="." index="1" unique_id=813266760]
+script = ExtResource("4_a43ba")
+
+[node name="Sprite2D" type="Sprite2D" parent="Door" index="0" unique_id=653719424]
 modulate = Color(1, 1, 1, 0.5019608)
 position = Vector2(32, -32)
 scale = Vector2(0.5, 0.5)

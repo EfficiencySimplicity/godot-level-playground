@@ -35,3 +35,5 @@ If we overlay the two they'll intersect; wall-value inside room-value should not
 - That place the Y,
 - Then place themselves UNbordered,
 - thus getting a correct map!
+
+ALSO return types need not be explicit, so the PlacementLayer / MapLayer debate may be solved!

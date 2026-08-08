@@ -149,7 +149,7 @@ func inverted() -> MapLayer:
 	
 	return new_layer
 
-func bordered(value: bool = false, cell_size: int = 64) -> MapLayer:
+func bordered(value: bool = false) -> MapLayer:
 	var expanded = MapLayer.new(size + Vector2i(2, 2), value)
 	expanded.world_bounds = world_bounds.grow(cell_size)
 	stamp_on(expanded, Placement.new(Vector2i(1, 1)))
@@ -179,18 +179,23 @@ func is_whole(value: bool = false):
 	if !value: total_empty_cells = (size.x * size.y) - total_empty_cells
 
 	var hit_positions: Array[Vector2i] = []
-	return iter_cells(
+
+	hit_positions.append(iter_cells(
 		(func(xy):
 			if g(xy) == value:
-				if hit_positions.size() == 0:
-					hit_positions.append(xy)
-				else:
-					if hit_positions.any(func(hit_xy): return (hit_xy - xy).length_squared() == 1):
-						hit_positions.append(xy)
-				if hit_positions.size() == total_empty_cells:
-					return true),
-		false
-	)
+				return xy)
+				))
+	var i = 0
+	while i < hit_positions.size():
+		var pos = hit_positions[i]
+		for side in 5:
+			var new_point = Placement.new(pos, side).map_vector2i(Vector2i.RIGHT).clamp(Vector2i.ZERO, size-Vector2i.ONE)
+			if g(new_point) == value:
+				if new_point not in hit_positions:
+					hit_positions.append(new_point)
+		i += 1
+		
+	return hit_positions.size() == total_empty_cells
 	
 		
 func iter_cells(f: Callable, default = null):

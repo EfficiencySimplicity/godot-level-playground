@@ -21,6 +21,7 @@ sources/0 = SubResource("TileSetAtlasSource_k0nfe")
 [node name="TestingGround" type="Node2D" unique_id=1366896337 node_paths=PackedStringArray("tile_map_layers")]
 script = ExtResource("1_38jdy")
 num_rooms = 13
+doors_per_room_range = Vector2i(1, 7)
 tile_map_layers = {
 "Walls": NodePath("Walls")
 }
