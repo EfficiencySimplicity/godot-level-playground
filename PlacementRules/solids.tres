@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlacementRule" format=3 uid="uid://dxwfa2yftothv"]
+
+[ext_resource type="Script" uid="uid://mklpqayf7i44" path="res://Scripts/placement_rule.gd" id="1_4ynm7"]
+
+[resource]
+script = ExtResource("1_4ynm7")
+tests = Dictionary[String, String]({
+"MustBeEmpty": "doesnt_collide",
+"Solids": "doesnt_collide"
+})
+target = "Solids"
+place_method = 1
+metadata/_custom_type_script = "uid://mklpqayf7i44"

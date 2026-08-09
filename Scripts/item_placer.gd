@@ -1,10 +1,11 @@
 class_name ItemPlacer extends Node2D
-
-@export var _solids: CollisionObject2D
-@export var _must_be_solids: CollisionObject2D
-@export var _must_be_empty: CollisionObject2D
+#
+#@export var _solids: CollisionObject2D
+#@export var _must_be_solids: CollisionObject2D
+#@export var _must_be_empty: CollisionObject2D
 
 @export var tiles: Array[TileStamper]
+@export var layers: Dictionary[CollisionObject2D, PlacementRule]
 
 # TODO: the whole placement thing in a single loop! so this obj never exposes its placement
 # and it self-deletes, maybe returning a bool if successful.
@@ -57,6 +58,9 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 	while !ok_placements.is_empty():
 		var pos = ok_placements.pick_random()
 		ok_placements.remove_at(ok_placements.find(pos))
+		
+		return pos
+		# TODO: update this all below to the PlacementRule system.
 	
 		# Places it, accounting for all the offsets globally (using self),
 		# and fills in the maps by reference
@@ -73,29 +77,46 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 	
 	
 func _compile() -> PlacementStack:
-	var layers: Dictionary[String, PlacementLayer]
+	var map_layers: Dictionary[MapLayer, PlacementRule] = {}
 	
-	var _solids_layer = MapLayer.from_shapes2d(_solids)
-	if _solids_layer != null:
-		var solids_layer = PlacementLayer.new(_solids_layer, 
-			{"Solids": _solids_layer.doesnt_collide, "MustBeEmpty": _solids_layer.doesnt_collide},
-			{"Solids": _solids_layer.place_on})
-		layers["Solids"] = solids_layer
-		
-	var _must_be_solids_layer = MapLayer.from_shapes2d(_must_be_solids)
-	if _must_be_solids_layer != null:
-		var must_be_solids_layer = PlacementLayer.new(_must_be_solids_layer, 
-			{"Solids": _must_be_solids_layer.overlaps})
-		layers["MustBeSolids"] = must_be_solids_layer
-		
-	var _must_be_empty_layer = MapLayer.from_shapes2d(_must_be_empty)
-	if _must_be_empty_layer != null:
-		var must_be_empty_layer = PlacementLayer.new(_must_be_empty_layer, 
-			{"Solids": _must_be_empty_layer.doesnt_collide},
-			{"MustBeEmpty": _must_be_empty_layer.place_on})
-		layers["MustBeEmpty"] = must_be_empty_layer
-	
-	return PlacementStack.from_placement_layers(layers)
+	for layer in layers:
+		if layer == null:
+			continue
+		var map_layer = MapLayer.from_shapes2d(layer)
+		if map_layer == null:
+			continue
+		map_layers[map_layer] = layers[layer]
+	#
+	#var _solids_layer = MapLayer.from_shapes2d(_solids)
+	#if _solids_layer != null:
+		#var solids_layer = PlacementLayer.new(_solids_layer, 
+			#{"Solids": _solids_layer.doesnt_collide, "MustBeEmpty": _solids_layer.doesnt_collide},
+			#{"Solids": _solids_layer.place_on})
+		#layers["Solids"] = solids_layer
+		#
+	#var _must_be_solids_layer = MapLayer.from_shapes2d(_must_be_solids)
+	#if _must_be_solids_layer != null:
+		#var must_be_solids_layer = PlacementLayer.new(_must_be_solids_layer, 
+			#{"Solids": _must_be_solids_layer.overlaps})
+		#layers["MustBeSolids"] = must_be_solids_layer
+		#
+	#var _must_be_empty_layer = MapLayer.from_shapes2d(_must_be_empty)
+	#if _must_be_empty_layer != null:
+		#var must_be_empty_layer = PlacementLayer.new(_must_be_empty_layer, 
+			#{"Solids": _must_be_empty_layer.doesnt_collide},
+			#{"MustBeEmpty": _must_be_empty_layer.place_on})
+		#layers["MustBeEmpty"] = must_be_empty_layer
+	var stack = PlacementStack.from_rules(map_layers)
+	print("++STACK++")
+	for rule in stack.rules:
+		print("- rule")
+		print("  - layer: ")
+		print(rule)
+		print("  - tests:")
+		for rule2 in stack.rules[rule].tests:
+			print(rule2, " ", stack.rules[rule].tests[rule2])
+	print("++ALL++")
+	return stack
 
 func on_place(stack, map_stack, pos):
 	pass

@@ -2,6 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_1tffm"]
 [ext_resource type="Texture2D" uid="uid://ccgfw434uiurl" path="res://Art/basic_assets.png" id="2_1tffm"]
+[ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="2_mvhgb"]
+[ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="3_rlmrc"]
+[ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="4_ckera"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1gsmf"]
 size = Vector2(64, 64)
@@ -12,7 +15,12 @@ size = Vector2(64, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ssh3t"]
 size = Vector2(64, 64)
 
-[node name="Locker" unique_id=70122258 instance=ExtResource("1_1tffm")]
+[node name="Locker" unique_id=70122258 node_paths=PackedStringArray("layers") instance=ExtResource("1_1tffm")]
+layers = {
+NodePath("Placement/Solids"): ExtResource("2_mvhgb"),
+NodePath("Placement/MustBeSolids"): ExtResource("3_rlmrc"),
+NodePath("Placement/MustBeEmpty"): ExtResource("4_ckera")
+}
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=678166529]
 texture_filter = 1

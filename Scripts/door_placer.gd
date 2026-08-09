@@ -4,15 +4,16 @@ class_name DoorPlacer extends ItemPlacer
 
 # Erase the Solids block under the door
 func on_place(stack, map_stack, pos):
+	pass
 	# I am ashamed of this code.
 	# We take the must-be-solids map
 	# ttt
 	# and make the middle false
 	# tft
 	# Then get offset and stamp it.
-	var solids_stamp = stack.layers["MustBeSolids"].copy()
-	solids_stamp.s(Vector2i(1, 0), false)
-	solids_stamp.stamp_on(map_stack.layers["Solids"], stack.get_match_position(pos, solids_stamp))
+	#var solids_stamp = stack.ru["MustBeSolids"].copy()
+	#solids_stamp.s(Vector2i(1, 0), false)
+	#solids_stamp.stamp_on(map_stack.layers["Solids"], stack.get_match_position(pos, solids_stamp))
 
 #func transform_pos(pos: Placement) -> Placement:
 	#var rot = int(global_rotation_degrees / 90)

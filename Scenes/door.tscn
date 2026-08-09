@@ -3,8 +3,13 @@
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_w6aom"]
 [ext_resource type="Script" uid="uid://dto4jcqcxdave" path="res://Scripts/door_placer.gd" id="2_fahql"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_p0e35"]
+[ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="3_8c32u"]
 [ext_resource type="Script" uid="uid://ytaokkpdfs8" path="res://tile_stamper.gd" id="3_ab4ky"]
 [ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Scripts/door.gd" id="4_a43ba"]
+[ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="4_ovubi"]
+[ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="5_sl2j7"]
+[ext_resource type="Resource" uid="uid://c5msstohcsi0t" path="res://PlacementRules/door_here.tres" id="6_sl2j7"]
+[ext_resource type="Resource" uid="uid://bwa6ky4jxtcph" path="res://PlacementRules/must_be_doorless.tres" id="7_ihyep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fahql"]
 size = Vector2(192, 64)
@@ -15,10 +20,26 @@ size = Vector2(64, 128)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
 size = Vector2(64, 64)
 
-[node name="Door" unique_id=70122258 node_paths=PackedStringArray("actual_door", "tiles") instance=ExtResource("1_w6aom")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8i87d"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m0e24"]
+size = Vector2(192, 64)
+
+[node name="Door" unique_id=70122258 node_paths=PackedStringArray("actual_door", "tiles", "layers") instance=ExtResource("1_w6aom")]
 script = ExtResource("2_fahql")
 actual_door = NodePath("Door")
 tiles = [NodePath("Placement/TileStamper")]
+layers = {
+NodePath("Placement/Solids"): ExtResource("3_8c32u"),
+NodePath("Placement/MustBeSolids"): ExtResource("4_ovubi"),
+NodePath("Placement/MustBeEmpty"): ExtResource("5_sl2j7"),
+NodePath("Placement/Door"): ExtResource("6_sl2j7"),
+NodePath("Placement/MustBeDoorless"): ExtResource("7_ihyep")
+}
+
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="0" unique_id=1655109649]
+position = Vector2(32, -32)
 
 [node name="CollisionShape2D" parent="Placement/MustBeSolids" parent_id_path=PackedInt32Array(538475917) index="0" unique_id=2018220721]
 shape = SubResource("RectangleShape2D_fahql")
@@ -36,6 +57,18 @@ metadata/_custom_type_script = "uid://ytaokkpdfs8"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/TileStamper" index="0" unique_id=834605127]
 position = Vector2(32, -32)
 shape = SubResource("RectangleShape2D_krb5w")
+
+[node name="Door" type="Area2D" parent="Placement" parent_id_path=PackedInt32Array(412783648) index="4" unique_id=217376289]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/Door" index="0" unique_id=1229304548]
+position = Vector2(32, -32)
+shape = SubResource("RectangleShape2D_8i87d")
+
+[node name="MustBeDoorless" type="Area2D" parent="Placement" parent_id_path=PackedInt32Array(412783648) index="5" unique_id=279638537]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Placement/MustBeDoorless" index="0" unique_id=1293013879]
+position = Vector2(32, -32)
+shape = SubResource("RectangleShape2D_m0e24")
 
 [node name="Door" type="Node2D" parent="." index="1" unique_id=813266760]
 position = Vector2(32, -32)

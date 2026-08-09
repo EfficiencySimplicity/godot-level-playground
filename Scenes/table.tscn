@@ -2,6 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_4ppvu"]
 [ext_resource type="Texture2D" uid="uid://ccgfw434uiurl" path="res://Art/basic_assets.png" id="2_4ppvu"]
+[ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="2_xqsq7"]
+[ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="3_5cpa6"]
+[ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="4_usajj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
 size = Vector2(192, 64)
@@ -9,7 +12,12 @@ size = Vector2(192, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r4jc3"]
 size = Vector2(320, 192)
 
-[node name="Table" unique_id=70122258 instance=ExtResource("1_4ppvu")]
+[node name="Table" unique_id=70122258 node_paths=PackedStringArray("layers") instance=ExtResource("1_4ppvu")]
+layers = {
+NodePath("Placement/Solids"): ExtResource("2_xqsq7"),
+NodePath("Placement/MustBeSolids"): ExtResource("3_5cpa6"),
+NodePath("Placement/MustBeEmpty"): ExtResource("4_usajj")
+}
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=2025941136]
 texture_filter = 1

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlacementRule" format=3 uid="uid://bwa6ky4jxtcph"]
+
+[ext_resource type="Script" uid="uid://mklpqayf7i44" path="res://Scripts/placement_rule.gd" id="1_vbfbl"]
+
+[resource]
+script = ExtResource("1_vbfbl")
+tests = Dictionary[String, String]({
+"Doors": "doesnt_collide"
+})
+metadata/_custom_type_script = "uid://mklpqayf7i44"

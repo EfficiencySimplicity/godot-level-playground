@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlacementRule" format=3 uid="uid://blma828mck8oi"]
+
+[ext_resource type="Script" uid="uid://mklpqayf7i44" path="res://Scripts/placement_rule.gd" id="1_dc2dq"]
+
+[resource]
+script = ExtResource("1_dc2dq")
+tests = Dictionary[String, String]({
+"Solids": "overlaps"
+})
+metadata/_custom_type_script = "uid://mklpqayf7i44"

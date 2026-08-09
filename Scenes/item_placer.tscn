@@ -1,12 +1,17 @@
 [gd_scene format=3 uid="uid://d1mrx41hyr2ff"]
 
 [ext_resource type="Script" uid="uid://bkl1dxet54wf6" path="res://Scripts/item_placer.gd" id="1_tuwl4"]
+[ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="2_00xvh"]
+[ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="3_77ctq"]
+[ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="4_e3px6"]
 
-[node name="ItemPlacer" type="Node2D" unique_id=70122258 node_paths=PackedStringArray("_solids", "_must_be_solids", "_must_be_empty")]
+[node name="ItemPlacer" type="Node2D" unique_id=70122258 node_paths=PackedStringArray("layers")]
 script = ExtResource("1_tuwl4")
-_solids = NodePath("Placement/Solids")
-_must_be_solids = NodePath("Placement/MustBeSolids")
-_must_be_empty = NodePath("Placement/MustBeEmpty")
+layers = {
+NodePath("Placement/Solids"): ExtResource("2_00xvh"),
+NodePath("Placement/MustBeSolids"): ExtResource("3_77ctq"),
+NodePath("Placement/MustBeEmpty"): ExtResource("4_e3px6")
+}
 
 [node name="Placement" type="Node2D" parent="." unique_id=412783648]
 

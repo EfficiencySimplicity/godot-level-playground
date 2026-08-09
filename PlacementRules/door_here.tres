@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PlacementRule" format=3 uid="uid://c5msstohcsi0t"]
+
+[ext_resource type="Script" uid="uid://mklpqayf7i44" path="res://Scripts/placement_rule.gd" id="1_crm8a"]
+
+[resource]
+script = ExtResource("1_crm8a")
+target = "Doors"
+place_method = 1
+metadata/_custom_type_script = "uid://mklpqayf7i44"

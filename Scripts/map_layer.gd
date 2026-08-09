@@ -132,7 +132,7 @@ func overlaps(other: MapLayer, pos: Placement = null) -> bool:
 				return false),
 		true
 	)
-	
+
 
 func inverted() -> MapLayer:
 	var new_data = BitMap.new()

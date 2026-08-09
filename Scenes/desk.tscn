@@ -3,6 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_825yk"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_ii4wa"]
 [ext_resource type="Texture2D" uid="uid://ccgfw434uiurl" path="res://Art/basic_assets.png" id="2_p3ia7"]
+[ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="2_qwyuq"]
+[ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="3_dp2kn"]
+[ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="4_svl0u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p3ia7"]
 size = Vector2(64, 192)
@@ -16,7 +19,12 @@ size = Vector2(64, 192)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ii4wa"]
 size = Vector2(256, 256)
 
-[node name="Desk" unique_id=70122258 instance=ExtResource("1_825yk")]
+[node name="Desk" unique_id=70122258 node_paths=PackedStringArray("layers") instance=ExtResource("1_825yk")]
+layers = {
+NodePath("Placement/Solids"): ExtResource("2_qwyuq"),
+NodePath("Placement/MustBeSolids"): ExtResource("3_dp2kn"),
+NodePath("Placement/MustBeEmpty"): ExtResource("4_svl0u")
+}
 
 [node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="0" unique_id=1655109649]
 position = Vector2(-96, 32)

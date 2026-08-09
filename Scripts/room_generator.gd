@@ -78,7 +78,7 @@ func get_map_stack():
 	
 	var must_be_empty_layer = MapLayer.new(solids_layer.size)
 	
-	stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "MustBeEmpty": must_be_empty_layer})
+	stack = MapLayerStack.from_layer_dict({"Solids": solids_layer, "Doors": must_be_empty_layer.copy(), "MustBeEmpty": must_be_empty_layer})
 	
 func generate_room_shape():
 	var shape = create_collision_shape(create_rect(Vector2i(4, 4), Vector2i(8, 8)))
