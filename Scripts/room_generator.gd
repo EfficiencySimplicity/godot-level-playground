@@ -94,8 +94,8 @@ func generate_room_shape():
 	
 func stamp_room_shape():
 	var walls = get_walls_layer()
-	
-	walls.stamp_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(-1, -1), Vector2i(0, 0))
+
+	get_solids_layer().inverted().place_on_tilemap(get_parent().find_child("Floor"), 0, Vector2i(0, 0))
 	walls.stamp_on_tilemap(get_parent().find_child("Walls"), 0, Vector2i(1, 0), Vector2i(-1, -1))
 	
 func generate_items():

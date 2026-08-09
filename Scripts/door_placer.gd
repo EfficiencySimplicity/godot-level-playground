@@ -12,11 +12,7 @@ func on_place(stack, map_stack, pos):
 	# Then get offset and stamp it.
 	var solids_stamp = stack.layers["MustBeSolids"].copy()
 	solids_stamp.s(Vector2i(1, 0), false)
-	print("Before")
-	print(map_stack.layers["Solids"])
 	solids_stamp.stamp_on(map_stack.layers["Solids"], stack.get_match_position(pos, solids_stamp))
-	print("After")
-	print(map_stack.layers["Solids"])
 
 #func transform_pos(pos: Placement) -> Placement:
 	#var rot = int(global_rotation_degrees / 90)

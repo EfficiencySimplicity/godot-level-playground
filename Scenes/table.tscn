@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dg274dgxm8udd"]
 
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_4ppvu"]
-[ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_4ppvu"]
+[ext_resource type="Texture2D" uid="uid://ccgfw434uiurl" path="res://Art/basic_assets.png" id="2_4ppvu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krb5w"]
 size = Vector2(192, 64)
@@ -12,11 +12,15 @@ size = Vector2(320, 192)
 [node name="Table" unique_id=70122258 instance=ExtResource("1_4ppvu")]
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=2025941136]
-position = Vector2(-32, -32)
-scale = Vector2(1.5, 0.5)
+texture_filter = 1
+position = Vector2(-32, -31.999989)
+rotation = 1.5707964
+scale = Vector2(8, 8.000001)
 texture = ExtResource("2_4ppvu")
+region_enabled = true
+region_rect = Rect2(32, 0, 8, 24)
 
-[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="0" unique_id=1655109649]
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="0" unique_id=1655109649]
 shape = SubResource("RectangleShape2D_krb5w")
 
 [node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]

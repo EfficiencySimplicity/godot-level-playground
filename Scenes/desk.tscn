@@ -2,32 +2,33 @@
 
 [ext_resource type="PackedScene" uid="uid://d1mrx41hyr2ff" path="res://Scenes/item_placer.tscn" id="1_825yk"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_ii4wa"]
+[ext_resource type="Texture2D" uid="uid://ccgfw434uiurl" path="res://Art/basic_assets.png" id="2_p3ia7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p3ia7"]
-size = Vector2(64, 256)
+size = Vector2(64, 192)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7rkfp"]
 size = Vector2(256, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ygxyb"]
-size = Vector2(64, 256)
+size = Vector2(64, 192)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ii4wa"]
-size = Vector2(256, 320)
+size = Vector2(256, 256)
 
 [node name="Desk" unique_id=70122258 instance=ExtResource("1_825yk")]
 
-[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="0" unique_id=1655109649]
-position = Vector2(-96, 0)
+[node name="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="0" unique_id=1655109649]
+position = Vector2(-96, 32)
 shape = SubResource("RectangleShape2D_p3ia7")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="1" unique_id=157756343]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="1" unique_id=157756343]
 position = Vector2(0, 96)
 shape = SubResource("RectangleShape2D_7rkfp")
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1801023206) index="2" unique_id=321041718]
-position = Vector2(96, 0)
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Placement/Solids" parent_id_path=PackedInt32Array(1890553233) index="2" unique_id=321041718]
+position = Vector2(96, 32)
 shape = SubResource("RectangleShape2D_ygxyb")
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
@@ -35,25 +36,33 @@ debug_color = Color(0, 0.6, 0.69803923, 0)
 position = Vector2(0, -32)
 
 [node name="CollisionShape2D" parent="Placement/MustBeEmpty" parent_id_path=PackedInt32Array(1959477447) index="0" unique_id=1239424687]
-position = Vector2(0, -32)
+position = Vector2(0, 0)
 shape = SubResource("RectangleShape2D_ii4wa")
 
-[node name="Sprites" type="Node2D" parent="." index="1" unique_id=1231288251]
-scale = Vector2(1.9999989, 1.9999989)
+[node name="Sprites" type="Sprite2D" parent="." index="1" unique_id=2102498151]
+texture_filter = 1
+position = Vector2(-1.1444092e-05, 31.999994)
+scale = Vector2(7.9999995, 7.9999995)
+texture = ExtResource("2_p3ia7")
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 24)
 
 [node name="Sprite2D" type="Sprite2D" parent="Sprites" index="0" unique_id=1613451159]
+visible = false
 position = Vector2(0, 48)
 scale = Vector2(1, 0.25)
 texture = ExtResource("2_ii4wa")
 region_rect = Rect2(0, 8, 128, 120)
 
 [node name="Sprite2D2" type="Sprite2D" parent="Sprites" index="1" unique_id=438179857]
+visible = false
 position = Vector2(-48, 0)
 scale = Vector2(0.25, 1)
 texture = ExtResource("2_ii4wa")
 region_rect = Rect2(0, 8, 128, 120)
 
 [node name="Sprite2D3" type="Sprite2D" parent="Sprites" index="2" unique_id=2094707270]
+visible = false
 position = Vector2(48, 0)
 scale = Vector2(0.25, 1)
 texture = ExtResource("2_ii4wa")
