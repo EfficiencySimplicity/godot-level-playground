@@ -58,16 +58,15 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 	while !ok_placements.is_empty():
 		var pos = ok_placements.pick_random()
 		ok_placements.remove_at(ok_placements.find(pos))
-		
-		return pos
+
 		# TODO: update this all below to the PlacementRule system.
 	
 		# Places it, accounting for all the offsets globally (using self),
 		# and fills in the maps by reference
 		# https://www.reddit.com/r/godot/comments/cgw8w8/how_to_check_if_a_key_exists_in_a_dictionary_in/
-		if stack.layers.has("Solids"):
+		if stack.solids != null:
 			var test_dest = map_stack.layers["Solids"].copy()
-			stack.layers["Solids"].old_layer.place_on(test_dest, stack.get_match_position(pos, stack.layers["Solids"]))
+			stack.solids.place_on(test_dest, stack.get_match_position(pos, stack.solids))
 			if test_dest.is_whole():
 				return pos
 		else:
@@ -78,6 +77,7 @@ func get_non_room_blocking_placement(stack: PlacementStack, map_stack: MapLayerS
 	
 func _compile() -> PlacementStack:
 	var map_layers: Dictionary[MapLayer, PlacementRule] = {}
+	var solids: MapLayer
 	
 	for layer in layers:
 		if layer == null:
@@ -85,27 +85,16 @@ func _compile() -> PlacementStack:
 		var map_layer = MapLayer.from_shapes2d(layer)
 		if map_layer == null:
 			continue
+			# YEAH, the node's NAME! Who's gonna stop me,
+			# the POLICE?!
+			#
+			#
+			#
+			# *sirens*
+		if layer.name == "Solids":
+			solids = map_layer
 		map_layers[map_layer] = layers[layer]
-	#
-	#var _solids_layer = MapLayer.from_shapes2d(_solids)
-	#if _solids_layer != null:
-		#var solids_layer = PlacementLayer.new(_solids_layer, 
-			#{"Solids": _solids_layer.doesnt_collide, "MustBeEmpty": _solids_layer.doesnt_collide},
-			#{"Solids": _solids_layer.place_on})
-		#layers["Solids"] = solids_layer
-		#
-	#var _must_be_solids_layer = MapLayer.from_shapes2d(_must_be_solids)
-	#if _must_be_solids_layer != null:
-		#var must_be_solids_layer = PlacementLayer.new(_must_be_solids_layer, 
-			#{"Solids": _must_be_solids_layer.overlaps})
-		#layers["MustBeSolids"] = must_be_solids_layer
-		#
-	#var _must_be_empty_layer = MapLayer.from_shapes2d(_must_be_empty)
-	#if _must_be_empty_layer != null:
-		#var must_be_empty_layer = PlacementLayer.new(_must_be_empty_layer, 
-			#{"Solids": _must_be_empty_layer.doesnt_collide},
-			#{"MustBeEmpty": _must_be_empty_layer.place_on})
-		#layers["MustBeEmpty"] = must_be_empty_layer
+
 	var stack = PlacementStack.from_rules(map_layers)
 	print("++STACK++")
 	for rule in stack.rules:
@@ -116,6 +105,8 @@ func _compile() -> PlacementStack:
 		for rule2 in stack.rules[rule].tests:
 			print(rule2, " ", stack.rules[rule].tests[rule2])
 	print("++ALL++")
+
+	stack.solids = solids
 	return stack
 
 func on_place(stack, map_stack, pos):

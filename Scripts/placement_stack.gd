@@ -4,6 +4,9 @@ class_name PlacementStack
 
 var rules: Dictionary[MapLayer, PlacementRule]
 
+# This must be complete and not cut off so we gotta store it somewhere!
+var solids: MapLayer
+
 var world_bounds: Rect2
 var size: Vector2i
 
