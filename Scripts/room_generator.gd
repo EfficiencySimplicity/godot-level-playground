@@ -37,16 +37,16 @@ func extend_room(old_room: CollisionShape2D, min_size: Vector2i = Vector2i(4, 4)
 	
 	var new_room = create_collision_shape(new_rect)
 	
-	if side == Placement.Side.Up:
+	if side == Placement.Side.UP:
 		new_room.position.x = old_room.position.x
 		new_room.position.y = old_room.position.y - new_rect.size.y
-	if side == Placement.Side.Right:
+	if side == Placement.Side.RIGHT:
 		new_room.position.x = old_room.position.x + old_rect.size.x
 		new_room.position.y = old_room.position.y
-	if side == Placement.Side.Down:
+	if side == Placement.Side.DOWN:
 		new_room.position.x = old_room.position.x
 		new_room.position.y = old_room.position.y + old_rect.size.y
-	if side == Placement.Side.Left:
+	if side == Placement.Side.LEFT:
 		new_room.position.x = old_room.position.x - new_rect.size.x
 		new_room.position.y = old_room.position.y
 		

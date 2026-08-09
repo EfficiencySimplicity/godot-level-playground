@@ -27,8 +27,8 @@ tile_map_layers = {
 }
 
 [node name="Floor" type="TileMapLayer" parent="." unique_id=1820883551]
-enabled = false
 tile_set = SubResource("TileSet_krb5w")
+collision_enabled = false
 
 [node name="Walls" type="TileMapLayer" parent="." unique_id=1785126093]
 tile_set = SubResource("TileSet_krb5w")
@@ -38,8 +38,10 @@ position = Vector2(32, 32)
 script = ExtResource("7_78y3u")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerMover" unique_id=1648027803]
+ignore_rotation = false
 
 [node name="RayCast2D" type="RayCast2D" parent="PlayerMover" unique_id=1053284335]
+visible = false
 target_position = Vector2(64, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="PlayerMover" unique_id=1062190360]

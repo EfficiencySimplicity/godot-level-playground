@@ -9,6 +9,23 @@ extends Node2D
 @onready var room_generator = preload("res://Scenes/room_generator.tscn")
 @onready var door = preload("res://Scenes/door.tscn")
 
+#var global_solids: MapLayer
+var door_portals: Array[Door]
+
+func get_next_move_orientation(object: Node2D):
+	var obj_orientation = Orientation.from_object(object)
+	var grid_placement  = obj_orientation.to_placement()
+	var door_there = door_portals.find_custom(func(x): return Orientation.from_object(x).to_placement().cell_center() == grid_placement.cell_center())
+	
+	if door_there == -1:
+		# no door, just your position plus the new vector
+		return obj_orientation.move_forwards(64)
+
+	else:
+		print("Was on a door; placement is ", grid_placement, " and door is ", Orientation.from_object(door_portals.get(door_there)).to_placement())
+		return door_portals.get(door_there).teleport(obj_orientation).move_forwards(64)
+
+
 func _ready():
 	var grid_width = int(floor(sqrt(num_rooms)))
 	var rooms = []
@@ -78,6 +95,8 @@ func connect_doors(rooms, doors: Array[DoorPlacer]):
 		var door_to_connect = available_doors.pick_random()
 		
 		door_to_connect.actual_door.connect_door(door_to_connect_to.actual_door)
+		door_portals.append(door_to_connect.actual_door)
+		door_portals.append(door_to_connect_to.actual_door)
 		
 		other_doors.erase(door_to_connect_to)
 		available_doors.erase(door_to_connect)
@@ -90,6 +109,9 @@ func connect_doors(rooms, doors: Array[DoorPlacer]):
 		available_doors.erase(door_a)
 		var door_b = available_doors.pick_random()
 		available_doors.erase(door_b)
+		
+		door_portals.append(door_a.actual_door)
+		door_portals.append(door_b.actual_door)
 		
 		door_a.actual_door.connect_door(door_b.actual_door)
 		

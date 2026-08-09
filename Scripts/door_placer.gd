@@ -17,3 +17,9 @@ func on_place(stack, map_stack, pos):
 	solids_stamp.stamp_on(map_stack.layers["Solids"], stack.get_match_position(pos, solids_stamp))
 	print("After")
 	print(map_stack.layers["Solids"])
+
+#func transform_pos(pos: Placement) -> Placement:
+	#var rot = int(global_rotation_degrees / 90)
+	#var other_rot = int(other.global_rotation_degrees / 90)
+	#
+	#return Placement.new(Vector2i(1, 1))

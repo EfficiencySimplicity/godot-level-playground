@@ -59,7 +59,7 @@ static func from_shapes2d(collider: CollisionObject2D, _cell_size: int = 64) -> 
 	if collider == null:
 		return null
 
-	var shapes = collider.get_children().filter(func(x): return x is CollisionShape2D and x.shape != null)
+	var shapes = collider.find_children("*", "CollisionShape2D", true, false).filter(func(x): return x.shape != null)
 	
 	if shapes.is_empty():
 		return null
@@ -188,7 +188,7 @@ func is_whole(value: bool = false):
 	var i = 0
 	while i < hit_positions.size():
 		var pos = hit_positions[i]
-		for side in 5:
+		for side in 4:
 			var new_point = Placement.new(pos, side).map_vector2i(Vector2i.RIGHT).clamp(Vector2i.ZERO, size-Vector2i.ONE)
 			if g(new_point) == value:
 				if new_point not in hit_positions:
@@ -196,7 +196,6 @@ func is_whole(value: bool = false):
 		i += 1
 		
 	return hit_positions.size() == total_empty_cells
-	
 		
 func iter_cells(f: Callable, default = null):
 	for y in size.y:
