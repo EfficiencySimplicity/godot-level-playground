@@ -16,3 +16,8 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_a61x6")
 elements = SubResource("Resource_l85en")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1651359637]
+transparent_bg = true
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport" unique_id=68546623]

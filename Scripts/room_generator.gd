@@ -1,7 +1,8 @@
-extends Area2D
+class_name RoomGenerator extends Area2D
 
 @export var elements: ElementSet
 @export var gen_on_ready: bool = false
+@export var doors: Array[Door] = []
 
 var stack: MapLayerStack
 
@@ -106,6 +107,10 @@ func generate():
 	generate_room_shape()
 	stamp_room_shape()
 	generate_items()
+	
+func own_door(door: Door):
+	doors.append(door)
+	door.room = self
 	
 func _ready():
 	if gen_on_ready:

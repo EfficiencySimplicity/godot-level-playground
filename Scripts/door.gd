@@ -1,5 +1,6 @@
 class_name Door extends Node2D
 
+@export var room: RoomGenerator;
 @export var other: Door = self
 @export var debug: bool
 
@@ -12,7 +13,9 @@ func _draw():
 	if !debug: return
 	draw_line(to_local(global_position), to_local(other.global_position), Color.CRIMSON, 2.0)
 	draw_circle(to_local(Orientation.from_object(self).to_placement().cell_center()), 15, Color.BLUE)
-
-func teleport(orientation: Orientation) -> Orientation:
+	
+func transform(orientation: Orientation) -> Orientation:
+	var relative_pos = orientation.pos - Orientation.from_object(self).pos
 	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
-	return Orientation.new(other.global_position, orientation.rot + rot_difference)
+	var new = Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
+	return Orientation.new(new, orientation.rot + rot_difference)

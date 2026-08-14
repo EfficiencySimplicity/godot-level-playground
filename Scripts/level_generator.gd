@@ -23,7 +23,7 @@ func get_next_move_orientation(object: Node2D):
 
 	else:
 		print("Was on a door; placement is ", grid_placement, " and door is ", Orientation.from_object(door_portals.get(door_there)).to_placement())
-		return door_portals.get(door_there).teleport(obj_orientation).move_forwards(64)
+		return door_portals.get(door_there).transform(obj_orientation).move_forwards(64)
 
 
 func _ready():
@@ -65,6 +65,7 @@ func place_doors(rooms):
 			assert(x.place_element(door_obj), "A door could not be placed!!!")
 			
 			doors.append(door_obj)
+			x.own_door(door_obj.actual_door)
 	)
 	
 	return doors
