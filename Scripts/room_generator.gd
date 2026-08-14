@@ -102,6 +102,10 @@ func stamp_room_shape():
 func generate_items():
 	for i in 25:
 		place_element(elements.get_element())
+		
+func orient_viewport():
+	var bounds = Utils.get_bounds(find_children("*", "CollisionShape2D", false, false), func(x): return Utils.shape_bounding_rect(x))
+	$SubViewport.size = bounds.size + Vector2(128, 128)
 
 func generate():
 	generate_room_shape()

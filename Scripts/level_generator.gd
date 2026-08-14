@@ -23,7 +23,7 @@ func get_next_move_orientation(object: Node2D):
 
 	else:
 		print("Was on a door; placement is ", grid_placement, " and door is ", Orientation.from_object(door_portals.get(door_there)).to_placement())
-		return door_portals.get(door_there).transform(obj_orientation).move_forwards(64)
+		return door_portals.get(door_there).door_transform(obj_orientation).move_forwards(64)
 
 
 func _ready():
@@ -47,6 +47,7 @@ func _ready():
 	connect_doors(rooms, place_doors(rooms))
 	print("Doors connected!")
 	rooms.map(func(x): x.generate_items())
+	rooms.map(func(x): x.orient_viewport())
 	
 func place_doors(rooms):
 	var doors: Array[DoorPlacer] = []

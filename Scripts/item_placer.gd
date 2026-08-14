@@ -47,8 +47,6 @@ func attempt_place(parent: Node2D, map_stack: MapLayerStack) -> bool:
 	rotation_degrees = pos.side * 90
 	stack.place(map_stack, pos)
 	
-	on_place(stack, map_stack, pos)
-	
 	for layer in tiles:
 		layer.stamp(parent.get_parent().tile_map_layers[layer.dest_name])
 		
@@ -108,6 +106,3 @@ func _compile() -> PlacementStack:
 
 	stack.solids = solids
 	return stack
-
-func on_place(stack, map_stack, pos):
-	pass

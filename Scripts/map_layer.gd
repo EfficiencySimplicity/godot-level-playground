@@ -47,12 +47,11 @@ static func from_layers(layers: Array, stamp: bool = true) -> MapLayer:
 	return map_layer
 	
 static func get_group_bounds(layers: Array) -> Rect2:
-	return layers.reduce(func(rect, layer): return rect.merge(layer.world_bounds), layers[0].world_bounds)
+	return Utils.get_bounds(layers, func(x): return x.world_bounds)
 	
 # The cell size could be a custom Node Type; say... PlacementLayer? could be different from MapLayer or something
 static func from_collision_shape(shape: CollisionShape2D, _cell_size: int) -> MapLayer:
-	var bounding_rect = Rect2i(Vector2i(shape.global_position - shape.shape.size / 2), shape.shape.size)
-	return MapLayer.from_rect(bounding_rect, _cell_size, 1)
+	return MapLayer.from_rect(Utils.shape_bounding_rect(shape), _cell_size, 1)
 	
 ## The MapLayer will be 0 (false) wherever it is outside the room
 static func from_shapes2d(collider: CollisionObject2D, _cell_size: int = 64) -> MapLayer:

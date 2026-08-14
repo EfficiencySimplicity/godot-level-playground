@@ -8,7 +8,7 @@ extends Node2D
 @export var cell_size: int = 64
 @onready var half_cell = Vector2(.5, .5) * cell_size
 
-func _input(event):
+func _input(_event):
 	if !Input.is_action_pressed("Movement"):
 		return
 		

@@ -13,9 +13,9 @@ enum PLACE_METHOD {
 }
 
 func test(tester: MapLayer, dest: MapLayerStack, placement: Placement):
-	for test in tests:
+	for test_target in tests:
 		# This is sorta fun to say
-		if !tester[tests[test]].call(dest.layers[test], placement):
+		if !tester[tests[test_target]].call(dest.layers[test_target], placement):
 			return false
 	return true
 

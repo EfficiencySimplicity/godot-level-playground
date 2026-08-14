@@ -14,8 +14,11 @@ func _draw():
 	draw_line(to_local(global_position), to_local(other.global_position), Color.CRIMSON, 2.0)
 	draw_circle(to_local(Orientation.from_object(self).to_placement().cell_center()), 15, Color.BLUE)
 	
-func transform(orientation: Orientation) -> Orientation:
+func door_transform(orientation: Orientation) -> Orientation:
 	var relative_pos = orientation.pos - Orientation.from_object(self).pos
 	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
 	var new = Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
 	return Orientation.new(new, orientation.rot + rot_difference)
+
+func is_in_front(pos: Vector2):
+	return Vector2.from_angle(rotation).dot(pos - global_position) > 0

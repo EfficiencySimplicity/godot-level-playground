@@ -14,7 +14,7 @@ func translate(v: Vector2i) -> Placement:
 	return self
 	
 func rotate(v: int) -> Placement:
-	side = (side + v) % 4
+	side = ((side + v) % 4) as Placement.Side
 	return self
 	
 func move_forwards(distance: int) -> Placement:
