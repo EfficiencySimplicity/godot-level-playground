@@ -34,10 +34,6 @@ func get_cell_offset(layer) -> Vector2i:
 ## Tests all positions and orientations and returns an array
 ## of everywhere this stack could be placed.
 func get_ok_placements_on(other: MapLayerStack) -> Array[Placement]:
-	
-	print("MapStack:")
-	for layer in other.layers.values():
-		print(layer)
 		
 	var ok_positions: Array[Placement] = []
 	for side in 4:
@@ -86,7 +82,6 @@ func placement_is_ok(other: MapLayerStack, pos: Placement):
 	for rule in rules:
 		# This get_match_position saved my life! Whattabug!
 		if !rules[rule].test(rule, other, get_match_position(pos, rule)):
-			print("NOT OK")
 			return false
 	return true
 	

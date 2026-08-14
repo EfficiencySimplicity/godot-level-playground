@@ -4,6 +4,8 @@ class_name RoomGenerator extends Area2D
 @export var gen_on_ready: bool = false
 @export var doors: Array[Door] = []
 
+@export var viewport: SubViewport
+
 var stack: MapLayerStack
 
 func create_rect(min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> RectangleShape2D:
@@ -102,10 +104,13 @@ func stamp_room_shape():
 func generate_items():
 	for i in 25:
 		place_element(elements.get_element())
-		
+
 func orient_viewport():
 	var bounds = Utils.get_bounds(find_children("*", "CollisionShape2D", false, false), func(x): return Utils.shape_bounding_rect(x))
-	$SubViewport.size = bounds.size + Vector2(128, 128)
+	viewport.size = bounds.size + Vector2(128, 128)
+	viewport.world_2d = get_world_2d()
+	print(viewport.get_texture())
+	print("Printed!")
 
 func generate():
 	generate_room_shape()

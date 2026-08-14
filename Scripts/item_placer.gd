@@ -94,15 +94,15 @@ func _compile() -> PlacementStack:
 		map_layers[map_layer] = layers[layer]
 
 	var stack = PlacementStack.from_rules(map_layers)
-	print("++STACK++")
-	for rule in stack.rules:
-		print("- rule")
-		print("  - layer: ")
-		print(rule)
-		print("  - tests:")
-		for rule2 in stack.rules[rule].tests:
-			print(rule2, " ", stack.rules[rule].tests[rule2])
-	print("++ALL++")
+	#print("++STACK++")
+	#for rule in stack.rules:
+		#print("- rule")
+		#print("  - layer: ")
+		#print(rule)
+		#print("  - tests:")
+		#for rule2 in stack.rules[rule].tests:
+			#print(rule2, " ", stack.rules[rule].tests[rule2])
+	#print("++ALL++")
 
 	stack.solids = solids
 	return stack

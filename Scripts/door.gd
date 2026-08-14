@@ -13,6 +13,7 @@ func _draw():
 	if !debug: return
 	draw_line(to_local(global_position), to_local(other.global_position), Color.CRIMSON, 2.0)
 	draw_circle(to_local(Orientation.from_object(self).to_placement().cell_center()), 15, Color.BLUE)
+	# draw_texture.call_deferred(room.viewport.get_texture(), Vector2(0, 0))
 	
 func door_transform(orientation: Orientation) -> Orientation:
 	var relative_pos = orientation.pos - Orientation.from_object(self).pos
