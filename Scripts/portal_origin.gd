@@ -77,24 +77,17 @@ func gen_portals():
 		# Generate a mesh from the 2 points
 		# for now, owned by the current room's rendermesh
 			
-		var mesh_pool = MeshPool.new()
-		
-		mesh_pool.vertices.append_array([min_ok_point, 
-		min_ok_point + (min_ok_point - global_position).normalized() * 200,
-		max_ok_point + (max_ok_point - global_position).normalized() * 200,
-		max_ok_point])
-		mesh_pool.triangles.append_array([
-			0, 1, 2,
-			0, 2, 3,
-		])
-		mesh_pool.uvs.append_array([
-			Vector2.ZERO,
-			Vector2(0, 1),
-			Vector2(1, 1),
-			Vector2(1, 0),
-		])
+		var mesh_pool = door.other.room.get_mesh_pool(
+			door.door_transform(Orientation.new(global_position)).pos,
+			door.door_transform(Orientation.new(min_ok_point)).pos,
+			door.door_transform(Orientation.new(max_ok_point)).pos,
+			door.other
+		)
 		
 		global_mesh_pool = MeshPool.combine([global_mesh_pool, mesh_pool])
+		
+		# TODO: remove this, it draws but one.
+		break
 
 	current_room.render_mesh.set_mesh(global_mesh_pool.to_mesh(ArrayMesh.new()))
 		
@@ -169,26 +162,51 @@ func _draw():
 		# Generate a mesh from the 2 points
 		# for now, owned by the current room's rendermesh
 			
-		var mesh_pool = MeshPool.new()
-		
-		mesh_pool.vertices.append_array([min_ok_point, max_ok_point,
-		min_ok_point + (min_ok_point - global_position).normalized() * 200,
-		max_ok_point + (max_ok_point - global_position).normalized() * 200])
-		mesh_pool.triangles.append_array([
-			0, 2, 3,
-			0, 3, 1,
-		])
-		mesh_pool.uvs.append_array([
-			Vector2.ZERO,
-			Vector2(0, 1),
-			Vector2(1, 1),
-			Vector2(1, 0),
-		])
+		var mesh_pool = door.other.room.get_mesh_pool(
+			door.door_transform(Orientation.new(global_position)).pos,
+			door.door_transform(Orientation.new(min_ok_point)).pos,
+			door.door_transform(Orientation.new(max_ok_point)).pos,
+			door.other
+		)
 		
 		global_mesh_pool = MeshPool.combine([global_mesh_pool, mesh_pool])
 		
-	for vert in global_mesh_pool.vertices:
-		draw_circle(to_local(vert), 2, Color.MEDIUM_AQUAMARINE)
+		draw_circle(to_local(min_ok_point), 15, Color.CHARTREUSE)
+		draw_string(SystemFont.new(), to_local(min_ok_point), "MIN")
+		draw_circle(to_local(max_ok_point), 15, Color.BROWN)
+		draw_string(SystemFont.new(), to_local(max_ok_point), "MAX")
+		draw_circle(to_local(global_position), 15, Color.RED)
+		draw_string(SystemFont.new(), to_local(global_position), "SELF")
+		
+		var other_pos = door.door_transform(Orientation.new(global_position)).pos
+		var min_pos = door.door_transform(Orientation.new(min_ok_point)).pos
+		var max_pos = door.door_transform(Orientation.new(max_ok_point)).pos
+		
+		draw_circle(to_local(min_pos), 15, Color.CHARTREUSE)
+		draw_string(SystemFont.new(), to_local(min_pos), "TRANSFORMED MIN")
+		draw_circle(to_local(max_pos), 15, Color.BROWN)
+		draw_string(SystemFont.new(), to_local(max_pos), "TRANSFORMED MAX")
+		draw_circle(to_local(other_pos), 15, Color.RED)
+		draw_string(SystemFont.new(), to_local(other_pos), "TRANSFORMED SELF")
+		
+		draw_circle(to_local(Utils.extend_to_rect_edge(
+			current_room.room_bounds,
+			min_pos + (min_pos - other_pos).normalized(),
+			(min_pos - other_pos).normalized())),
+			10,
+			Color.DARK_BLUE)
+		draw_circle(to_local(Utils.extend_to_rect_edge(
+			current_room.room_bounds,
+			max_pos + (max_pos - other_pos).normalized(),
+			(max_pos - other_pos).normalized())),
+			10,
+			Color.DARK_BLUE)
+
+		# TODO: remove this, it draws but one.
+		break
+		
+	for i in range(global_mesh_pool.vertices.size()):
+		draw_string(SystemFont.new(), to_local(global_mesh_pool.vertices[i]), str(i))
 			
 func _input(event):
 	gen_portals()

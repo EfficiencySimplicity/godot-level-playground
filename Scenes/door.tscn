@@ -73,9 +73,8 @@ shape = SubResource("RectangleShape2D_m0e24")
 [node name="Door" type="Node2D" parent="." index="1" unique_id=813266760]
 position = Vector2(32, -32)
 script = ExtResource("4_a43ba")
-debug = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Door" index="0" unique_id=653719424]
-modulate = Color(1, 1, 1, 0.5019608)
+modulate = Color(1, 1, 1, 0.15294118)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_p0e35")

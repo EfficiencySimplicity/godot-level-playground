@@ -14,7 +14,7 @@ func _init(_vertices = null, _triangles = null, _uvs = null):
 		triangles = _triangles
 	if _uvs != null:
 		uvs = _uvs
-	
+		
 
 static func combine(pools: Array[MeshPool]) -> MeshPool:
 	var glob_vertices: PackedVector2Array = []

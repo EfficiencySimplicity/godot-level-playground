@@ -23,6 +23,9 @@ func _input(_event):
 	elif Input.is_action_pressed("Down"):
 		sprite.rotation_degrees = + 90
 		
+	global_position += Vector2.from_angle(sprite.rotation) * 3
+	return
+		
 	var new_placement = get_tree().current_scene.get_next_move_orientation(sprite)
 	
 	var pqparams = PhysicsPointQueryParameters2D.new()

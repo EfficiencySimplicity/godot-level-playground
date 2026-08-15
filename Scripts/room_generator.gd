@@ -7,6 +7,8 @@ class_name RoomGenerator extends Area2D
 @export var viewport: SubViewport
 @export var render_mesh: MeshInstance2D
 
+@export var room_bounds: Rect2
+
 var stack: MapLayerStack
 
 func create_rect(min_size: Vector2i = Vector2i(4, 4), max_size: Vector2i = Vector2i(16, 16)) -> RectangleShape2D:
@@ -107,9 +109,12 @@ func generate_items():
 		place_element(elements.get_element())
 
 func orient_viewport():
-	var bounds = Utils.get_bounds(find_children("*", "CollisionShape2D", false, false), func(x): return Utils.shape_bounding_rect(x))
-	viewport.size = bounds.size + Vector2(128, 128)
-	viewport.get_child(0).global_position = bounds.position + (bounds.size / 2)
+	room_bounds = Utils.get_bounds(find_children("*", "CollisionShape2D", false, false), func(x): return Utils.shape_bounding_rect(x))
+	room_bounds.position -= Vector2(64, 64)
+	room_bounds.size += Vector2(128, 128)
+	
+	viewport.size = room_bounds.size
+	viewport.get_child(0).global_position = room_bounds.position + (room_bounds.size / 2)
 	render_mesh.global_position = Vector2.ZERO
 	
 	viewport.world_2d = get_world_2d()
@@ -118,10 +123,53 @@ func generate():
 	generate_room_shape()
 	stamp_room_shape()
 	generate_items()
+	orient_viewport()
 	
 func own_door(door: Door):
 	doors.append(door)
 	door.room = self
+
+func to_uv(pos: Vector2) -> Vector2:
+	return ((pos - room_bounds.position) / room_bounds.size).clamp(Vector2.ZERO, Vector2.ONE)
+	
+# all in this-room coordinates (this being the room being peered into)
+func get_mesh_pool(pos: Vector2, min_point: Vector2, max_point: Vector2, removement_door: Door) -> MeshPool:
+	var min_angle = rad_to_deg(pos.angle_to_point(min_point))
+	var max_angle = rad_to_deg(pos.angle_to_point(max_point))
+	
+	var ok_corners = Utils.get_corners(room_bounds).filter(
+		func(corner): 
+			var angle_to = rad_to_deg(pos.angle_to_point(corner))
+			return Utils.compare_angles(min_angle, angle_to) and Utils.compare_angles(angle_to, max_angle)
+	)
+	
+	var min_extended = Utils.extend_to_rect_edge(room_bounds, min_point + (min_point - pos).normalized(), (min_point - pos).normalized())
+	var max_extended = Utils.extend_to_rect_edge(room_bounds, max_point + (max_point - pos).normalized(), (max_point - pos).normalized())
+		
+	var pts = [min_point, min_extended]
+	pts.append_array(ok_corners)
+	pts.append_array([max_extended, max_point])
+
+	var triangles: PackedInt32Array = []
+	# basic fan method
+	for i in range(pts.size() - 1):
+		triangles.append(0)
+		triangles.append(i)
+		triangles.append(i + 1)
+		
+	var uvs: PackedVector2Array = PackedVector2Array(pts.map(func(x): return self.to_uv(x)))
+		
+	return MeshPool.new(
+		PackedVector2Array(pts.map(func(x): return removement_door.door_transform(Orientation.new(x)).pos)),
+		triangles,
+		uvs
+	)
+
+	
+	# take each point of the 4 corners
+	# get the ones within the angle range
+	# get where the angle rays intersect the bounds
+	# go minhit -> extended minhit -> each in angle order (catch problem angles!!!) -> extended maxhit -> maxhit
 	
 func _ready():
 	if gen_on_ready:

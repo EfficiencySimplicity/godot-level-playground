@@ -28,6 +28,7 @@ func get_next_move_orientation(object: Node2D):
 
 
 func _ready():
+	Utils.test_angle_comparisons()
 	var grid_width = int(floor(sqrt(num_rooms)))
 	var rooms = []
 	
