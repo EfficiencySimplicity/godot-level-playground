@@ -5,6 +5,7 @@ class_name RoomGenerator extends Area2D
 @export var doors: Array[Door] = []
 
 @export var viewport: SubViewport
+@export var render_mesh: MeshInstance2D
 
 var stack: MapLayerStack
 
@@ -109,8 +110,7 @@ func orient_viewport():
 	var bounds = Utils.get_bounds(find_children("*", "CollisionShape2D", false, false), func(x): return Utils.shape_bounding_rect(x))
 	viewport.size = bounds.size + Vector2(128, 128)
 	viewport.get_child(0).global_position = bounds.position + (bounds.size / 2)
-	# for debugging
-	viewport.get_parent().global_position = global_position + Vector2(512, 512)
+	render_mesh.global_position = Vector2.ZERO
 	
 	viewport.world_2d = get_world_2d()
 

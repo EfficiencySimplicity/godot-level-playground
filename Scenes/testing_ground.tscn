@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b600e2a1gx7re" path="res://Scripts/level_generator.gd" id="1_38jdy"]
 [ext_resource type="Texture2D" uid="uid://bxav4rgy06bqu" path="res://Art/demo_wall_floor.png" id="1_wyk58"]
+[ext_resource type="Script" uid="uid://cx0j3yf4egp72" path="res://Scripts/portal_origin.gd" id="5_0u5ym"]
 [ext_resource type="Script" uid="uid://dkcyps1y254to" path="res://Scripts/player_mover.gd" id="7_78y3u"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="7_k0nfe"]
 
@@ -15,12 +16,14 @@ texture_region_size = Vector2i(64, 64)
 
 [sub_resource type="TileSet" id="TileSet_krb5w"]
 tile_size = Vector2i(64, 64)
-physics_layer_0/collision_layer = 1
+physics_layer_0/collision_layer = 3
 sources/0 = SubResource("TileSetAtlasSource_k0nfe")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_krb5w"]
 
 [node name="TestingGround" type="Node2D" unique_id=1366896337 node_paths=PackedStringArray("tile_map_layers")]
 script = ExtResource("1_38jdy")
-num_rooms = 13
+num_rooms = 1
 doors_per_room_range = Vector2i(1, 7)
 tile_map_layers = {
 "Walls": NodePath("Walls")
@@ -47,3 +50,14 @@ target_position = Vector2(64, 0)
 [node name="Sprite2D" type="Sprite2D" parent="PlayerMover" unique_id=1062190360]
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("7_k0nfe")
+
+[node name="PortalOrigin" type="Area2D" parent="PlayerMover" unique_id=584689681]
+collision_mask = 5
+script = ExtResource("5_0u5ym")
+angle_increase = 3
+metadata/_custom_type_script = "uid://cx0j3yf4egp72"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerMover/PortalOrigin" unique_id=799108627]
+shape = SubResource("CircleShape2D_krb5w")
+
+[connection signal="area_entered" from="PlayerMover/PortalOrigin" to="PlayerMover/PortalOrigin" method="_on_area_entered"]

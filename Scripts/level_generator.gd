@@ -17,13 +17,14 @@ func get_next_move_orientation(object: Node2D):
 	var grid_placement  = obj_orientation.to_placement()
 	var door_there = door_portals.find_custom(func(x): return Orientation.from_object(x).to_placement().cell_center() == grid_placement.cell_center())
 	
-	if door_there == -1:
+	var next_pos = obj_orientation.move_forwards(64)
+	if door_there == -1 or (door_portals.get(door_there).is_in_front(next_pos.pos)):
 		# no door, just your position plus the new vector
-		return obj_orientation.move_forwards(64)
+		return next_pos
 
 	else:
 		print("Was on a door; placement is ", grid_placement, " and door is ", Orientation.from_object(door_portals.get(door_there)).to_placement())
-		return door_portals.get(door_there).door_transform(obj_orientation).move_forwards(64)
+		return door_portals.get(door_there).door_transform(next_pos)
 
 
 func _ready():

@@ -29,7 +29,6 @@ func _input(_event):
 	pqparams.collision_mask = 0b00000000_00000000_00000000_00000001
 	pqparams.position = new_placement.pos
 	
-	print(get_viewport().get_world_2d().get_direct_space_state().intersect_point(pqparams).size())
 	if get_viewport().get_world_2d().get_direct_space_state().intersect_point(pqparams).size() != 0:
 		return
 	
