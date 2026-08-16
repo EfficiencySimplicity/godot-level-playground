@@ -27,7 +27,6 @@ render_mesh = NodePath("Node2D/RoomRenderMesh")
 [node name="Node2D" type="Node2D" parent="." unique_id=261677466]
 
 [node name="RoomRenderMesh" type="MeshInstance2D" parent="Node2D" unique_id=1203983812]
-modulate = Color(1, 1, 1, 0.5372549)
 visibility_layer = 2
 z_index = 5
 position = Vector2(37.99997, 34.5)
