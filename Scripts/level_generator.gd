@@ -11,6 +11,7 @@ extends Node2D
 
 #var global_solids: MapLayer
 var door_portals: Array[Door]
+var rooms: Array[RoomGenerator]
 
 func get_next_move_orientation(object: Node2D):
 	var obj_orientation = Orientation.from_object(object)
@@ -30,7 +31,7 @@ func get_next_move_orientation(object: Node2D):
 func _ready():
 	Utils.test_angle_comparisons()
 	var grid_width = int(floor(sqrt(num_rooms)))
-	var rooms = []
+	rooms = []
 	
 	for i in num_rooms:
 		var x = i % grid_width

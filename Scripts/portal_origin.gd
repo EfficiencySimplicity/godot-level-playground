@@ -12,7 +12,9 @@ func gen_portals():
 		print("No current room to gen portals from!")
 		return
 		
-	var global_mesh_pool = MeshPool.new()
+	var mesh_pools: Dictionary[RoomGenerator, MeshPool] = {}
+	for room in get_tree().current_scene.rooms:
+		mesh_pools[room] = MeshPool.new()
 		
 	for door in current_room.doors:
 		
@@ -27,6 +29,9 @@ func gen_portals():
 		var out_normal = door.get_normal() * -1
 		# from you to the door-line
 		var distance = (door.get_start() - global_position).dot(out_normal)
+		if distance < 1:
+			get_parent().global_position -= out_normal * (1 - distance)
+			distance = 1
 		
 		if end_angle < start_angle:
 			end_angle += 360
@@ -84,9 +89,10 @@ func gen_portals():
 			door.other
 		)
 		
-		global_mesh_pool = MeshPool.combine([global_mesh_pool, mesh_pool])
+		mesh_pools[door.other.room] = MeshPool.combine([mesh_pools[door.other.room], mesh_pool])
 
-	current_room.render_mesh.set_mesh(global_mesh_pool.to_mesh(ArrayMesh.new()))
+	for room in mesh_pools:
+		room.render_mesh.set_mesh(mesh_pools[room].to_mesh(ArrayMesh.new()))
 		
 		
 #func _draw():
