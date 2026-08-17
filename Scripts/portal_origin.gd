@@ -21,17 +21,21 @@ func gen_portals():
 		if !door.is_in_front(global_position):
 			continue;
 			
-		var start_angle = rad_to_deg(global_position.angle_to_point(door.get_start()))
-		var end_angle = rad_to_deg(global_position.angle_to_point(door.get_end()))
-		# should be in door
-		var dir_to_end = (door.get_end() - door.get_start()).normalized()
 		# a vector straight out the door
 		var out_normal = door.get_normal() * -1
 		# from you to the door-line
 		var distance = (door.get_start() - global_position).dot(out_normal)
+		
+		var test_pos = global_position
+		
 		if distance < 1:
-			get_parent().global_position -= out_normal * (1 - distance)
+			test_pos -= out_normal * (1 - distance)
 			distance = 1
+			
+		var start_angle = rad_to_deg(global_position.angle_to_point(door.get_start()))
+		var end_angle = rad_to_deg(global_position.angle_to_point(door.get_end()))
+		# should be in door
+		var dir_to_end = (door.get_end() - door.get_start()).normalized()
 		
 		if end_angle < start_angle:
 			end_angle += 360
@@ -50,10 +54,10 @@ func gen_portals():
 			
 			var amount_along_normal = direction.dot(out_normal)
 			# where on the door-line we test
-			var hit_point = global_position + direction * (distance / amount_along_normal)
+			var hit_point = test_pos + direction * (distance / amount_along_normal)
 			
 			var rcparams = PhysicsRayQueryParameters2D.create(
-				global_position,
+				test_pos,
 				hit_point,
 				0b00000000_00000000_00000000_00000010
 			)
@@ -83,7 +87,7 @@ func gen_portals():
 		# for now, owned by the current room's rendermesh
 			
 		var mesh_pool = door.other.room.get_mesh_pool(
-			door.door_transform(Orientation.new(global_position)).pos,
+			door.door_transform(Orientation.new(test_pos)).pos,
 			door.door_transform(Orientation.new(min_ok_point)).pos,
 			door.door_transform(Orientation.new(max_ok_point)).pos,
 			door.other

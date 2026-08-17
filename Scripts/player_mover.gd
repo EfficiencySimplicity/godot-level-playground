@@ -40,7 +40,7 @@ func _input(_event):
 	global_rotation_degrees = round(global_rotation_degrees / 90) * 90
 	sprite.global_rotation_degrees = round(sprite.global_rotation_degrees / 90) * 90
 	
-	global_position = Vector2(Orientation.from_object(self).to_placement().to_orientation().translate(half_cell).pos) - Vector2.from_angle(sprite.rotation - global_rotation) * .95
+	global_position = Vector2(Orientation.from_object(self).to_placement().to_orientation().translate(half_cell).pos)
 	
 func _draw():
 	if !debug: return

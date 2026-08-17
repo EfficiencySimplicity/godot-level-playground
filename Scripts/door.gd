@@ -24,7 +24,7 @@ func door_transform(orientation: Orientation) -> Orientation:
 	return Orientation.new(new, orientation.rot + rot_difference)
 
 func is_in_front(pos: Vector2):
-	return Vector2.from_angle(global_rotation + deg_to_rad(90)).dot(pos - global_position) > 0
+	return Vector2.from_angle(global_rotation + deg_to_rad(90)).dot(pos - global_position) >= 0
 
 func get_normal():
 	return Vector2.from_angle(deg_to_rad(global_rotation_degrees + 90))
