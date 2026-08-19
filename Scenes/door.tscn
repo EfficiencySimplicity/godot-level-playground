@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_p0e35"]
 [ext_resource type="Resource" uid="uid://dxwfa2yftothv" path="res://PlacementRules/solids.tres" id="3_8c32u"]
 [ext_resource type="Script" uid="uid://ytaokkpdfs8" path="res://tile_stamper.gd" id="3_ab4ky"]
-[ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Scripts/door.gd" id="4_a43ba"]
+[ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Portals/portal.gd" id="4_a43ba"]
 [ext_resource type="Resource" uid="uid://blma828mck8oi" path="res://PlacementRules/must-be-solids.tres" id="4_ovubi"]
 [ext_resource type="Resource" uid="uid://bt5vne0aawpyr" path="res://PlacementRules/must-be-empty.tres" id="5_sl2j7"]
 [ext_resource type="Resource" uid="uid://c5msstohcsi0t" path="res://PlacementRules/door_here.tres" id="6_sl2j7"]

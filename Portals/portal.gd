@@ -1,10 +1,11 @@
-class_name Door extends Node2D
+class_name Portal extends Node2D
 
-@export var room: RoomGenerator;
-@export var other: Door = self
+@export var room: PortalRoom;
+@export var other: Portal = self
+
 @export var debug: bool
 
-func connect_door(_other: Door):
+func connect_portal(_other: Portal):
 	other = _other
 	other.other = self
 
@@ -17,11 +18,17 @@ func _draw():
 	draw_circle(to_local(get_start()), 5, Color.RED)
 	draw_circle(to_local(get_end()), 5, Color.RED)
 
-func door_transform(orientation: Orientation) -> Orientation:
+func port(orientation: Orientation) -> Orientation:
 	var relative_pos = orientation.pos - Orientation.from_object(self).pos
 	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
 	var new = Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
 	return Orientation.new(new, orientation.rot + rot_difference)
+	
+func port_pos(pos: Vector2) -> Vector2:
+	var relative_pos = pos - self.global_position
+	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
+	return Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
+
 
 func is_in_front(pos: Vector2):
 	return Vector2.from_angle(global_rotation + deg_to_rad(90)).dot(pos - global_position) >= 0

@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://buu8pbl2ykxo"]
+
+[ext_resource type="Script" uid="uid://c1sgapw15e3u7" path="res://Portals/portal_room.gd" id="1_db2ga"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_a61x6"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_a61x6"]
+viewport_path = NodePath("Node2D/SubViewport")
+
+[node name="PortalRoom" type="Node2D" unique_id=1972959863]
+script = ExtResource("1_db2ga")
+bounds = Rect2(0, 0, 100, 100)
+debug = null
+
+[node name="RenderMesh" type="MeshInstance2D" parent="." unique_id=231064731]
+top_level = true
+visibility_layer = 2
+z_index = 5
+position = Vector2(37.99997, 34.5)
+mesh = SubResource("ArrayMesh_a61x6")
+texture = SubResource("ViewportTexture_a61x6")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=784975319]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+debug_draw = 1
+canvas_cull_mask = 4294966273
+render_target_update_mode = 3
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport" unique_id=1767255349]

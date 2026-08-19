@@ -32,7 +32,6 @@ static func combine(pools: Array[MeshPool]) -> MeshPool:
 	
 func to_mesh(mesh: ArrayMesh):
 	if self.is_useless():
-		print("Useless mesh, not creating!")
 		return mesh
 		
 	# https://docs.godotengine.org/en/stable/tutorials/3d/procedural_geometry/arraymesh.html#doc-arraymesh

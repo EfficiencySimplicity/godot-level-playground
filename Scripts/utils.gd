@@ -43,6 +43,9 @@ static func test_angle_comparisons():
 	assert(compare_angles(230, 200) == false)
 	#assert(false)
 	
+static func safediv(a, b):
+	return INT32_MAX if is_zero_approx(b) else a/b
+	
 # assumes the pos is within the rect
 # will only consider hitting edges, but also end up in corners just fine!
 static func extend_to_rect_edge(rect: Rect2, pos: Vector2, dir: Vector2):
@@ -52,14 +55,16 @@ static func extend_to_rect_edge(rect: Rect2, pos: Vector2, dir: Vector2):
 	var down_dist  = rect.position.y + rect.size.y - pos.y
 	
 	# number of times needed to reach left edge
-	var left_mul = left_dist / dir.x
-	var right_mul = right_dist / dir.x
-	var up_mul = up_dist / dir.y
-	var down_mul = down_dist / dir.y
+	var left_mul = safediv(left_dist, dir.x)
+	var right_mul = safediv(right_dist, dir.x)
+	var up_mul = safediv(up_dist, dir.y)
+	var down_mul = safediv(down_dist, dir.y)
 	
 	# only consider positive muls!
 	
 	var muls = [left_mul, right_mul, up_mul, down_mul].filter(func(x): return x >= 0)
+	if muls.size() == 0:
+		print(rect, " ", [left_mul, right_mul, up_mul, down_mul], " ", pos, " ", dir)
 	return pos + muls.min() * dir
 	
 		
