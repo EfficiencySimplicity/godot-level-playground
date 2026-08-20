@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="2_cui45"]
 [ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Portals/portal.gd" id="3_7abg2"]
 [ext_resource type="TileSet" uid="uid://bpqxcxa6caqvm" path="res://Tiles/floor-wall.tres" id="4_7abg2"]
+[ext_resource type="Script" uid="uid://cx0j3yf4egp72" path="res://Portals/portal_origin.gd" id="5_ej6ep"]
 
 [node name="PortalTesting" type="Node2D" unique_id=1748066431]
 
@@ -105,3 +106,10 @@ metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAAAAAEAAAABAAAAAAAAAAIAAAABAAAAAAAAAAMAAAABAAAAAAAAAAQAAAABAAAAAAABAAQAAAABAAAAAAADAAQAAAABAAAAAAAEAAQAAAABAAAAAAAFAAQAAAABAAAAAAAGAAQAAAABAAAAAAAGAAMAAAABAAAAAAAGAAEAAAABAAAAAAAGAAAAAAABAAAAAAAFAAAAAAABAAAAAAAEAAAAAAABAAAAAAACAAAAAAABAAAAAAADAAAAAAABAAAAAAAQAAAAAAABAAAAAAAQAAEAAAABAAAAAAAQAAMAAAABAAAAAAAQAAQAAAABAAAAAAAQAAUAAAABAAAAAAAQAAYAAAABAAAAAAAQAAcAAAABAAAAAAAQAAgAAAABAAAAAAARAAgAAAABAAAAAAASAAgAAAABAAAAAAAUAAgAAAABAAAAAAATAAgAAAABAAAAAAAUAAcAAAABAAAAAAAUAAYAAAABAAAAAAATAAYAAAABAAAAAAATAAUAAAABAAAAAAATAAQAAAABAAAAAAATAAMAAAABAAAAAAATAAEAAAABAAAAAAATAAAAAAABAAAAAAASAAAAAAABAAAAAAARAAAAAAABAAAAAAA=")
 tile_set = ExtResource("4_7abg2")
 navigation_enabled = false
+
+[node name="PortalOrigin" type="Node2D" parent="." unique_id=398097193 node_paths=PackedStringArray("current_room")]
+position = Vector2(344, 200)
+script = ExtResource("5_ej6ep")
+current_room = NodePath("../Room1/PortalRoom")
+debug = true
+metadata/_custom_type_script = "uid://cx0j3yf4egp72"

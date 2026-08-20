@@ -47,6 +47,12 @@ func is_in_front(pos: Vector2):
 func get_normal():
 	return Vector2.from_angle(deg_to_rad(global_rotation_degrees + 90))
 	
+func get_out_normal():
+	return get_normal() * -1
+	
+func get_vec_along():
+	return (get_end() - get_start()).normalized()
+	
 func get_start():
 	return global_position - (Vector2.from_angle(global_rotation) * (width / 2) * .99)
 

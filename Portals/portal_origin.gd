@@ -1,30 +1,37 @@
-extends Area2D
+@tool
+class_name PortalOrigin extends Node2D
 
-@export var current_room: RoomGenerator
+@export var current_room: PortalRoom
 @export var angle_increase: int = 5
 
-func _on_area_entered(area: Area2D):
-	if area is RoomGenerator:
-		current_room = area
+@export var debug: bool:
+	set(v):
+		debug = v
+		queue_redraw()
 	
 func gen_portals():
 	if current_room == null:
 		print("No current room to gen portals from!")
 		return
 		
-	var mesh_pools: Dictionary[RoomGenerator, MeshPool] = {}
-	for room in get_tree().current_scene.rooms:
-		mesh_pools[room] = MeshPool.new()
+	#var mesh_pools: Dictionary[RoomGenerator, MeshPool] = {}
+	#for room in get_tree().current_scene.rooms:
+		#mesh_pools[room] = MeshPool.new()
+		#
+	#for door in current_room.doors:
+	
+	for portal in current_room.portals:
 		
-	for door in current_room.doors:
-		
-		if !door.is_in_front(global_position):
+		if !portal.is_in_front(global_position):
 			continue;
 			
-		# a vector straight out the door
-		var out_normal = door.get_normal() * -1
+		var start = portal.get_start()
+		var end   = portal.get_end()
+		var out_normal = portal.get_out_normal()
+		var dir_to_end = portal.get_vec_along()
+		
 		# from you to the door-line
-		var distance = (door.get_start() - global_position).dot(out_normal)
+		var distance = (start - global_position).dot(out_normal)
 		
 		var test_pos = global_position
 		
@@ -32,10 +39,8 @@ func gen_portals():
 			test_pos -= out_normal * (1 - distance)
 			distance = 1
 			
-		var start_angle = rad_to_deg(global_position.angle_to_point(door.get_start()))
-		var end_angle = rad_to_deg(global_position.angle_to_point(door.get_end()))
-		# should be in door
-		var dir_to_end = (door.get_end() - door.get_start()).normalized()
+		var start_angle = rad_to_deg(global_position.angle_to_point(start))
+		var end_angle = rad_to_deg(global_position.angle_to_point(end))
 		
 		if end_angle < start_angle:
 			end_angle += 360
@@ -86,127 +91,104 @@ func gen_portals():
 		# Generate a mesh from the 2 points
 		# for now, owned by the current room's rendermesh
 			
-		var mesh_pool = door.other.room.get_mesh_pool(
-			door.door_transform(Orientation.new(test_pos)).pos,
-			door.door_transform(Orientation.new(min_ok_point)).pos,
-			door.door_transform(Orientation.new(max_ok_point)).pos,
-			door.other
+		#var mesh_pool = portal.other.room.get_mesh_pool(
+			#portal.door_transform(Orientation.new(test_pos)).pos,
+			#portal.door_transform(Orientation.new(min_ok_point)).pos,
+			#portal.door_transform(Orientation.new(max_ok_point)).pos,
+			#portal.other
+		#)
+		#
+		#mesh_pools[portal.other.room] = MeshPool.combine([mesh_pools[portal.other.room], mesh_pool])
+
+	#for room in mesh_pools:
+		#room.render_mesh.set_mesh(mesh_pools[room].to_mesh(ArrayMesh.new()))
+		
+func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
+	if !portal.is_in_front(global_position):
+		return []
+			
+	var start = portal.get_start()
+	var end   = portal.get_end()
+	var out_normal = portal.get_out_normal()
+	var dir_to_end = portal.get_vec_along()
+		
+	# from you to the door-line
+	var distance = (start - global_position).dot(out_normal)
+	
+	var test_pos = global_position
+	
+	if distance < 1:
+		test_pos -= out_normal * (1 - distance)
+		distance = 1
+		
+	var start_angle = rad_to_deg(global_position.angle_to_point(start))
+	var end_angle = rad_to_deg(global_position.angle_to_point(end))
+	
+	if end_angle < start_angle:
+		end_angle += 360
+		
+	var min_ok_angle = -1000000
+	var min_ok_point = Vector2.ZERO
+	var max_ok_angle = 1000000
+	var max_ok_point = Vector2.ZERO
+	
+	var has_hit_at_all = false
+	
+	for current_angle in range(start_angle, end_angle, angle_increase):
+		
+		# https://forum.godotengine.org/t/how-to-get-a-portion-of-a-vector-that-is-aligned-with-another-vector/40426/4
+		var direction = Vector2.from_angle(deg_to_rad(current_angle))
+		
+		var amount_along_normal = direction.dot(out_normal)
+		# where on the door-line we test
+		var hit_point = test_pos + direction * (distance / amount_along_normal)
+		
+		var rcparams = PhysicsRayQueryParameters2D.create(
+			test_pos,
+			hit_point,
+			0b00000000_00000000_00000000_00000010
 		)
 		
-		mesh_pools[door.other.room] = MeshPool.combine([mesh_pools[door.other.room], mesh_pool])
-
-	for room in mesh_pools:
-		room.render_mesh.set_mesh(mesh_pools[room].to_mesh(ArrayMesh.new()))
+		var hit = get_viewport() \
+		.get_world_2d() \
+		.get_direct_space_state() \
+		.intersect_ray(rcparams) \
+		.size() != 0
 		
+		if hit:
+			if has_hit_at_all:
+				break
+		else:
+			if !has_hit_at_all:
+				has_hit_at_all = true
+				min_ok_angle = current_angle
+				min_ok_point = hit_point
+				
+			max_ok_angle = current_angle
+			max_ok_point = hit_point
+			
+	if !has_hit_at_all:
+		return []
+	
+	return [min_ok_point, max_ok_point]
 		
 func _draw():
-	if current_room == null:
-		print("No current room to gen portals from!")
-		return
+	if !(current_room and debug): return
+	
+	for portal in current_room.portals:
+		var range = get_visible_portal_range(portal)
 		
-	var global_mesh_pool = MeshPool.new()
+		if range.is_empty():
+			draw_line(to_local(global_position), to_local(portal.global_position), Color.BLACK)
+			return
 		
-	for door in current_room.doors:
+		draw_line(to_local(global_position), to_local(range[0]), Color.BLUE)
+		draw_line(to_local(global_position), to_local(range[1]), Color.BLUE)
 		
-		if !door.is_in_front(global_position):
-			continue;
-			
-		var start_angle = rad_to_deg(global_position.angle_to_point(door.get_start()))
-		var end_angle = rad_to_deg(global_position.angle_to_point(door.get_end()))
-		# should be in door
-		var dir_to_end = (door.get_end() - door.get_start()).normalized()
-		# a vector straight out the door
-		var out_normal = door.get_normal() * -1
-		# from you to the door-line
-		var distance = (door.get_start() - global_position).dot(out_normal)
 		
-		if end_angle < start_angle:
-			end_angle += 360
-			
-		var min_ok_angle = -1000000
-		var min_ok_point = Vector2.ZERO
-		var max_ok_angle = 1000000
-		var max_ok_point = Vector2.ZERO
-		
-		var has_hit_at_all = false
-		
-		for current_angle in range(start_angle, end_angle, angle_increase):
-			
-			# https://forum.godotengine.org/t/how-to-get-a-portion-of-a-vector-that-is-aligned-with-another-vector/40426/4
-			var direction = Vector2.from_angle(deg_to_rad(current_angle))
-			
-			var amount_along_normal = direction.dot(out_normal)
-			# where on the door-line we test
-			var hit_point = global_position + direction * (distance / amount_along_normal)
-			
-			var rcparams = PhysicsRayQueryParameters2D.create(
-				global_position,
-				hit_point,
-				0b00000000_00000000_00000000_00000010
-			)
-			
-			var hit = get_viewport() \
-			.get_world_2d() \
-			.get_direct_space_state() \
-			.intersect_ray(rcparams) \
-			.size() != 0
-			
-			if hit:
-				if has_hit_at_all:
-					break
-			else:
-				if !has_hit_at_all:
-					has_hit_at_all = true
-					min_ok_angle = current_angle
-					min_ok_point = hit_point
-					
-				max_ok_angle = current_angle
-				max_ok_point = hit_point
-				
-		if !has_hit_at_all:
-			continue
-			
-		# Generate a mesh from the 2 points
-		# for now, owned by the current room's rendermesh
-			
-		var mesh_pool = door.other.room.get_mesh_pool(
-			door.door_transform(Orientation.new(global_position)).pos,
-			door.door_transform(Orientation.new(min_ok_point)).pos,
-			door.door_transform(Orientation.new(max_ok_point)).pos,
-			door.other
-		)
-		
-		global_mesh_pool = MeshPool.combine([global_mesh_pool, mesh_pool])
-		
-		draw_circle(to_local(min_ok_point), 15, Color.CHARTREUSE)
-		draw_string(SystemFont.new(), to_local(min_ok_point), "MIN")
-		draw_circle(to_local(max_ok_point), 15, Color.BROWN)
-		draw_string(SystemFont.new(), to_local(max_ok_point), "MAX")
-		draw_circle(to_local(global_position), 15, Color.RED)
-		draw_string(SystemFont.new(), to_local(global_position), "SELF")
-		
-		var other_pos = door.door_transform(Orientation.new(global_position)).pos
-		var min_pos = door.door_transform(Orientation.new(min_ok_point)).pos
-		var max_pos = door.door_transform(Orientation.new(max_ok_point)).pos
-
-		draw_circle(to_local(Utils.extend_to_rect_edge(
-			current_room.room_bounds,
-			min_pos + (min_pos - other_pos).normalized(),
-			(min_pos - other_pos).normalized())),
-			10,
-			Color.DARK_BLUE)
-		draw_circle(to_local(Utils.extend_to_rect_edge(
-			current_room.room_bounds,
-			max_pos + (max_pos - other_pos).normalized(),
-			(max_pos - other_pos).normalized())),
-			10,
-			Color.DARK_BLUE)
-
-	for i in range(global_mesh_pool.vertices.size()):
-		draw_circle(to_local(global_mesh_pool.vertices[i]), 10, Color.from_rgba8(255, 0, 0, 128))
 			
 func _input(event):
 	gen_portals()
-		
-func _process(delta):
-	queue_redraw()
+		#
+#func _process(delta):
+	#queue_redraw()
