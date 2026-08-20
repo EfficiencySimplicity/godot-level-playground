@@ -116,4 +116,5 @@ position = Vector2(112, 96)
 script = ExtResource("5_ej6ep")
 current_room = NodePath("../Room1/PortalRoom")
 debug = true
+show_external_bounds = true
 metadata/_custom_type_script = "uid://cx0j3yf4egp72"

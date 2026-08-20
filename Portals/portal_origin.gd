@@ -8,6 +8,11 @@ class_name PortalOrigin extends Node2D
 	set(v):
 		debug = v
 		queue_redraw()
+		
+@export var show_external_bounds: bool:
+	set(v):
+		show_external_bounds = v
+		queue_redraw()
 	
 func gen_portals():
 	if current_room == null:
@@ -192,7 +197,21 @@ func _draw():
 		draw_polyline(Array(mesh.vertices).map(func(x): return to_local(x)), Color.AQUA)
 		Array(mesh.vertices).map(func(x): draw_circle(to_local(x), 5, Color.AQUA))
 		
-		
+		if show_external_bounds:
+			var bounds_color = Color.HOT_PINK
+			bounds_color.a = .25
+			
+			var bounds = portal.other.room.bounds
+			var pos = portal.other.port_pos(bounds.position)
+			var size = portal.other.port_pos(bounds.position + bounds.size) - pos
+			
+			draw_rect(
+				Rect2(
+					to_local(pos.min(pos + size)),
+					pos.max(pos + size) - pos.min(pos + size)
+				),
+				bounds_color
+			)
 			
 func _input(event):
 	pass
