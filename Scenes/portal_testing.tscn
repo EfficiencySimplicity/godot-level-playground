@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dfy4j7gwujpwa" path="res://Portals/portal.gd" id="3_7abg2"]
 [ext_resource type="TileSet" uid="uid://bpqxcxa6caqvm" path="res://Tiles/floor-wall.tres" id="4_7abg2"]
 [ext_resource type="Script" uid="uid://cx0j3yf4egp72" path="res://Portals/portal_origin.gd" id="5_ej6ep"]
+[ext_resource type="Script" uid="uid://cgjn6ekunnnum" path="res://Scripts/basic_mover.gd" id="5_wcdgh"]
 
 [node name="PortalTesting" type="Node2D" unique_id=1748066431]
 
@@ -13,7 +14,6 @@
 [node name="PortalRoom" parent="Room1" unique_id=1972959863 node_paths=PackedStringArray("portals") instance=ExtResource("1_4dry4")]
 portals = [NodePath("../Sprite2D/Portal"), NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal")]
 bounds = Rect2(0, 0, 448, 320)
-debug = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Room1" unique_id=1145696661]
 position = Vector2(96, 32)
@@ -25,7 +25,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room2/Sprite2D3/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D2" type="Sprite2D" parent="Room1" unique_id=1283948828]
@@ -39,7 +38,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D3/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D3" type="Sprite2D" parent="Room1" unique_id=535523429]
@@ -53,7 +51,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D2/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Room2" type="Node2D" parent="." unique_id=1738648032]
@@ -62,7 +59,6 @@ position = Vector2(1024, 0)
 [node name="PortalRoom" parent="Room2" unique_id=1531253500 node_paths=PackedStringArray("portals") instance=ExtResource("1_4dry4")]
 portals = [NodePath("../Sprite2D/Portal"), NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal")]
 bounds = Rect2(1024, 0, 320, 576)
-debug = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Room2" unique_id=696147939]
 position = Vector2(32, 160)
@@ -75,7 +71,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D2/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D2" type="Sprite2D" parent="Room2" unique_id=65018631]
@@ -89,7 +84,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D3" type="Sprite2D" parent="Room2" unique_id=1459230316]
@@ -103,7 +97,6 @@ script = ExtResource("3_7abg2")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room1/Sprite2D/Portal")
 width = 64.0
-debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1405045613]
@@ -111,10 +104,27 @@ tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAAAAAEAAAABAAAAAAAAAAIAAAABAAA
 tile_set = ExtResource("4_7abg2")
 navigation_enabled = false
 
-[node name="PortalOrigin" type="Node2D" parent="." unique_id=398097193 node_paths=PackedStringArray("current_room")]
-position = Vector2(112, 96)
+[node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=467107450]
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAAEAAAAAAAAAAAACAAIAAAAAAAAAAAACAAMAAAAAAAAAAAADAAEAAAAAAAAAAAADAAIAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAEAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAEAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAMAAAAAAAAAAAARAAEAAAAAAAAAAAARAAIAAAAAAAAAAAARAAMAAAAAAAAAAAARAAQAAAAAAAAAAAARAAUAAAAAAAAAAAARAAYAAAAAAAAAAAARAAcAAAAAAAAAAAASAAEAAAAAAAAAAAASAAIAAAAAAAAAAAASAAMAAAAAAAAAAAASAAQAAAAAAAAAAAASAAUAAAAAAAAAAAASAAYAAAAAAAAAAAASAAcAAAAAAAAAAAA=")
+tile_set = ExtResource("4_7abg2")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Player" type="Node2D" parent="." unique_id=92987676]
+position = Vector2(176.00002, 144)
+script = ExtResource("5_wcdgh")
+speed = 200.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=119243379]
+scale = Vector2(0.26399997, 0.26399997)
+texture = ExtResource("2_cui45")
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=307213577]
+scale = Vector2(0.9999999, 0.9999999)
+ignore_rotation = false
+
+[node name="PortalOrigin" type="Node2D" parent="Player" unique_id=292732538 node_paths=PackedStringArray("current_room")]
+scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("5_ej6ep")
-current_room = NodePath("../Room1/PortalRoom")
-debug = true
-show_external_bounds = true
+current_room = NodePath("../../Room1/PortalRoom")
 metadata/_custom_type_script = "uid://cx0j3yf4egp72"

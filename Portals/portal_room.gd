@@ -48,10 +48,18 @@ func get_extended_mesh_from_portal(portal: Portal, view_point: Vector2, vis_rang
 			return Utils.compare_angles(min_angle, angle_to) and Utils.compare_angles(angle_to, max_angle)
 	)
 	
+	ok_corners.sort_custom(
+		func(corner_a, corner_b):
+			return Utils.compare_angles(
+				rad_to_deg(view_point.angle_to_point(corner_a)),
+				rad_to_deg(view_point.angle_to_point(corner_b))
+			)
+	)
+	
 	# extend the min and max of the view range until they hit the walls
 	var min_extended = Utils.extend_to_rect_edge(bounds, vis_range[0], min_dir)
 	var max_extended = Utils.extend_to_rect_edge(bounds, vis_range[1], max_dir)
-		
+
 	# create the array of points; going clockwise:
 	# - the first point on the door that's visible - that point extended 'til it hits the room edge
 	var pts = [vis_range[0], min_extended]

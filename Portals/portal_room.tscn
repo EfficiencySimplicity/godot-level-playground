@@ -15,7 +15,6 @@ bounds = Rect2(0, 0, 100, 100)
 top_level = true
 visibility_layer = 2
 z_index = 5
-position = Vector2(37.99997, 34.5)
 mesh = SubResource("ArrayMesh_a61x6")
 texture = SubResource("ViewportTexture_a61x6")
 
@@ -25,6 +24,8 @@ transparent_bg = true
 handle_input_locally = false
 debug_draw = 1
 canvas_cull_mask = 4294966273
+size = Vector2i(100, 100)
 render_target_update_mode = 3
 
 [node name="Camera2D" type="Camera2D" parent="SubViewport" unique_id=1767255349]
+position = Vector2(50, 50)

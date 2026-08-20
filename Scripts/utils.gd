@@ -14,9 +14,8 @@ static func get_corners(rect: Rect2) -> Array:
 		rect.position + rect.size,
 		rect.position + Vector2(0, rect.size.y)
 	]
-
-# along the shortest distance between the two, is b > a?
-static func compare_angles(a: float, b: float):
+	
+static func setup_angles(a: float, b: float):
 	var i = 0
 	while abs(a - b) > 180 and i < 100:
 		if a > b:
@@ -26,7 +25,13 @@ static func compare_angles(a: float, b: float):
 	if i == 100:
 		print("Fuse (in angle comparison) blew!")
 		
-	return b > a
+	return [a, b]
+	
+# along the shortest distance between the two, is b > a?
+static func compare_angles(a: float, b: float):
+	var angles = setup_angles(a, b)
+		
+	return angles[1] > angles[0]
 	
 static func test_angle_comparisons():
 	assert(compare_angles(1, 10) == true)

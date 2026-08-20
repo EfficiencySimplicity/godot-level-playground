@@ -30,15 +30,14 @@ func _draw():
 	draw_circle(to_local(get_end()), 5, Color.RED)
 
 func port(orientation: Orientation) -> Orientation:
-	var relative_pos = orientation.pos - Orientation.from_object(self).pos
-	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
+	var relative_pos = orientation.pos - global_position
+	# https://github.com/godotengine/godot-proposals/discussions/9996
+	var rot_difference = rotation_change_through()
 	var new = Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
 	return Orientation.new(new, orientation.rot + rot_difference)
 	
 func port_pos(pos: Vector2) -> Vector2:
-	var relative_pos = pos - self.global_position
-	var rot_difference = int((other.global_rotation_degrees + 180) - global_rotation_degrees) % 360
-	return Orientation.new(other.global_position, rot_difference).map_vector2(relative_pos)
+	return Orientation.new(other.global_position, rotation_change_through()).map_vector2(pos - self.global_position)
 
 
 func is_in_front(pos: Vector2):
@@ -50,6 +49,9 @@ func get_normal():
 func get_out_normal():
 	return get_normal() * -1
 	
+func distance_to(point: Vector2) -> float:
+	return (get_start() - point).dot(get_out_normal())
+	
 func get_vec_along():
 	return (get_end() - get_start()).normalized()
 	
@@ -58,3 +60,6 @@ func get_start():
 
 func get_end():
 	return global_position + (Vector2.from_angle(global_rotation) * (width / 2) * .99)
+	
+func rotation_change_through():
+	return fmod((other.global_rotation_degrees + 180) - global_rotation_degrees, 360)
