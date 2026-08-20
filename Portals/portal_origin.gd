@@ -28,7 +28,6 @@ func gen_portals():
 		var start = portal.get_start()
 		var end   = portal.get_end()
 		var out_normal = portal.get_out_normal()
-		var dir_to_end = portal.get_vec_along()
 		
 		# from you to the door-line
 		var distance = (start - global_position).dot(out_normal)
@@ -45,9 +44,7 @@ func gen_portals():
 		if end_angle < start_angle:
 			end_angle += 360
 			
-		var min_ok_angle = -1000000
 		var min_ok_point = Vector2.ZERO
-		var max_ok_angle = 1000000
 		var max_ok_point = Vector2.ZERO
 		
 		var has_hit_at_all = false
@@ -79,10 +76,8 @@ func gen_portals():
 			else:
 				if !has_hit_at_all:
 					has_hit_at_all = true
-					min_ok_angle = current_angle
 					min_ok_point = hit_point
 					
-				max_ok_angle = current_angle
 				max_ok_point = hit_point
 				
 		if !has_hit_at_all:
@@ -171,24 +166,37 @@ func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
 		return []
 	
 	return [min_ok_point, max_ok_point]
-		
+	
+# https://www.reddit.com/r/godot/comments/17fed5p/is_there_a_way_to_put_a_button_on_the_inspector/
+@export_tool_button("Redraw line") var redraw = queue_redraw
 func _draw():
 	if !(current_room and debug): return
 	
 	for portal in current_room.portals:
-		var range = get_visible_portal_range(portal)
+		var vis_range = get_visible_portal_range(portal)
 		
-		if range.is_empty():
+		if vis_range.is_empty():
 			draw_line(to_local(global_position), to_local(portal.global_position), Color.BLACK)
 			return
 		
-		draw_line(to_local(global_position), to_local(range[0]), Color.BLUE)
-		draw_line(to_local(global_position), to_local(range[1]), Color.BLUE)
+		draw_line(to_local(global_position), to_local(vis_range[0]), Color.BLUE)
+		draw_line(to_local(global_position), to_local(vis_range[1]), Color.BLUE)
+		
+		# get all the meshes in the room and transform 'em back and draw the verts
+		var mesh = portal.other.room.get_extended_mesh_from_portal(
+			portal.other,
+			portal.port_pos(global_position), 
+			[portal.port_pos(vis_range[0]), portal.port_pos(vis_range[1])]
+		)
+		
+		draw_polyline(Array(mesh.vertices).map(func(x): return to_local(x)), Color.AQUA)
+		Array(mesh.vertices).map(func(x): draw_circle(to_local(x), 5, Color.AQUA))
 		
 		
 			
 func _input(event):
-	gen_portals()
+	pass
+	#gen_portals()
 		#
 #func _process(delta):
 	#queue_redraw()

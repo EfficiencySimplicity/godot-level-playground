@@ -12,6 +12,8 @@
 
 [node name="PortalRoom" parent="Room1" unique_id=1972959863 node_paths=PackedStringArray("portals") instance=ExtResource("1_4dry4")]
 portals = [NodePath("../Sprite2D/Portal"), NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal")]
+bounds = Rect2(0, 0, 448, 320)
+debug = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Room1" unique_id=1145696661]
 position = Vector2(96, 32)
@@ -59,6 +61,8 @@ position = Vector2(1024, 0)
 
 [node name="PortalRoom" parent="Room2" unique_id=1531253500 node_paths=PackedStringArray("portals") instance=ExtResource("1_4dry4")]
 portals = [NodePath("../Sprite2D/Portal"), NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal")]
+bounds = Rect2(1024, 0, 320, 576)
+debug = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Room2" unique_id=696147939]
 position = Vector2(32, 160)
@@ -108,7 +112,7 @@ tile_set = ExtResource("4_7abg2")
 navigation_enabled = false
 
 [node name="PortalOrigin" type="Node2D" parent="." unique_id=398097193 node_paths=PackedStringArray("current_room")]
-position = Vector2(344, 200)
+position = Vector2(112, 96)
 script = ExtResource("5_ej6ep")
 current_room = NodePath("../Room1/PortalRoom")
 debug = true
