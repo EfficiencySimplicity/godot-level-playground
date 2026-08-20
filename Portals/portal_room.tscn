@@ -5,12 +5,11 @@
 [sub_resource type="ArrayMesh" id="ArrayMesh_a61x6"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a61x6"]
-viewport_path = NodePath("Node2D/SubViewport")
+viewport_path = NodePath("SubViewport")
 
 [node name="PortalRoom" type="Node2D" unique_id=1972959863]
 script = ExtResource("1_db2ga")
 bounds = Rect2(0, 0, 100, 100)
-debug = null
 
 [node name="RenderMesh" type="MeshInstance2D" parent="." unique_id=231064731]
 top_level = true

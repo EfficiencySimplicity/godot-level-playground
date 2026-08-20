@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Level Generation Playground"
-run/main_scene="uid://dkripvdutw57v"
+run/main_scene="uid://xdustpuh232u"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

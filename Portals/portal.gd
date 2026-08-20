@@ -1,9 +1,18 @@
+@tool
 class_name Portal extends Node2D
 
-@export var room: PortalRoom;
-@export var other: Portal = self
+@export var room: PortalRoom
+@export var other: Portal
 
-@export var debug: bool
+@export var width: float:
+	set(v):
+		width = v
+		queue_redraw()
+
+@export var debug: bool:
+	set(v):
+		debug = v
+		queue_redraw()
 
 func connect_portal(_other: Portal):
 	other = _other
@@ -12,8 +21,10 @@ func connect_portal(_other: Portal):
 # https://docs.godotengine.org/en/stable/tutorials/2d/custom_drawing_in_2d.html
 func _draw():
 	if !debug: return
-	draw_line(to_local(global_position), to_local(other.global_position), Color.CRIMSON, 2.0)
-	draw_circle(to_local(Orientation.from_object(self).to_placement().cell_center()), 15, Color.BLUE)
+	
+	if other:
+		draw_line(to_local(global_position), to_local(other.global_position), Color.CRIMSON, 2.0)
+		draw_circle(to_local(global_position), 5, Color.GREEN_YELLOW)
 	
 	draw_circle(to_local(get_start()), 5, Color.RED)
 	draw_circle(to_local(get_end()), 5, Color.RED)
@@ -37,7 +48,7 @@ func get_normal():
 	return Vector2.from_angle(deg_to_rad(global_rotation_degrees + 90))
 	
 func get_start():
-	return global_position - (Vector2.from_angle(global_rotation) * (global_scale.x / 2) * .99 * 64)
+	return global_position - (Vector2.from_angle(global_rotation) * (width / 2) * .99)
 
 func get_end():
-	return global_position + (Vector2.from_angle(global_rotation) * (global_scale.x / 2) * .99 * 64)
+	return global_position + (Vector2.from_angle(global_rotation) * (width / 2) * .99)

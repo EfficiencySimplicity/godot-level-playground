@@ -1,23 +1,10 @@
 [gd_scene format=3 uid="uid://dkripvdutw57v"]
 
 [ext_resource type="Script" uid="uid://b600e2a1gx7re" path="res://Scripts/level_generator.gd" id="1_38jdy"]
-[ext_resource type="Texture2D" uid="uid://bxav4rgy06bqu" path="res://Art/demo_wall_floor.png" id="1_wyk58"]
+[ext_resource type="TileSet" uid="uid://bpqxcxa6caqvm" path="res://Tiles/floor-wall.tres" id="2_0u5ym"]
 [ext_resource type="Script" uid="uid://cx0j3yf4egp72" path="res://Portals/portal_origin.gd" id="5_0u5ym"]
 [ext_resource type="Script" uid="uid://dkcyps1y254to" path="res://Scripts/player_mover.gd" id="7_78y3u"]
 [ext_resource type="Texture2D" uid="uid://pple6fejhs41" path="res://icon.svg" id="7_k0nfe"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k0nfe"]
-texture = ExtResource("1_wyk58")
-texture_region_size = Vector2i(64, 64)
-0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
-1:0/0 = 0
-1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(32, -32, 32, 32, -32, 32, -32, -32)
-
-[sub_resource type="TileSet" id="TileSet_krb5w"]
-tile_size = Vector2i(64, 64)
-physics_layer_0/collision_layer = 3
-sources/0 = SubResource("TileSetAtlasSource_k0nfe")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_krb5w"]
 
@@ -30,11 +17,11 @@ tile_map_layers = {
 }
 
 [node name="Floor" type="TileMapLayer" parent="." unique_id=1820883551]
-tile_set = SubResource("TileSet_krb5w")
+tile_set = ExtResource("2_0u5ym")
 collision_enabled = false
 
 [node name="Walls" type="TileMapLayer" parent="." unique_id=1785126093]
-tile_set = SubResource("TileSet_krb5w")
+tile_set = ExtResource("2_0u5ym")
 
 [node name="PlayerMover" type="Node2D" parent="." unique_id=668468931]
 position = Vector2(32, 32)
