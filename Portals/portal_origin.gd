@@ -2,6 +2,17 @@
 class_name PortalOrigin extends Portable
 
 @export var angle_increase: int = 5
+var meshes: Array[PortalVisionArea]
+
+class PortalVisionArea:
+	var mesh: ArrayMesh
+	var room: PortalRoom
+	var y: int
+	
+	func _init(_mesh: ArrayMesh, _room: PortalRoom, _y: int):
+		mesh = _mesh
+		room = _room
+		y = _y
 
 @export var debug: bool:
 	set(v):
@@ -16,9 +27,7 @@ class_name PortalOrigin extends Portable
 func gen_portals():
 	if !current_room: return
 		
-	var mesh_pools: Dictionary[PortalRoom, MeshPool] = {}
-	for room in current_room.portals.map(func(x): return x.other.room):
-		mesh_pools[room] = MeshPool.new()
+	meshes = []
 	
 	for portal in current_room.portals:
 		
@@ -34,12 +43,18 @@ func gen_portals():
 			[portal.port_pos(vis_range[0]), portal.port_pos(vis_range[1])]
 		)
 
-		mesh_pools[portal.other.room] = MeshPool.combine([mesh_pools[portal.other.room], mesh_pool])
+		meshes.append(
+			PortalVisionArea.new(mesh_pool.to_mesh(), portal.other.room, 1)
+		)
 
-	for room in mesh_pools:
-		room.render_mesh.set_mesh(mesh_pools[room].to_mesh(ArrayMesh.new()))
+	meshes.sort_custom(func(a, b): return b.y > a.y)
+	queue_redraw()
 		
-func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
+## The PortalOrigin needs to imagine itself in a virtual place inside another room sometimes,
+## so we can pass in test_pos as the position to test from.
+## along with a portal we're looking thru to cast from,
+## along with the angle range we have to look thru this door.
+func get_visible_portal_range(portal: Portal, test_pos = null, cast_from = null, min_angle = null, max_angle = null) -> Array[Vector2]:
 	if !portal.is_in_front(global_position):
 		return []
 			
@@ -50,7 +65,7 @@ func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
 	# from you to the door-line
 	var distance = portal.distance_to(global_position)
 	
-	var test_pos = global_position
+	if !test_pos: test_pos = global_position
 	
 	if distance < 1:
 		test_pos -= out_normal * (1 - distance)
@@ -75,10 +90,8 @@ func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
 		
 		# https://forum.godotengine.org/t/how-to-get-a-portion-of-a-vector-that-is-aligned-with-another-vector/40426/4
 		var direction = Vector2.from_angle(deg_to_rad(current_angle))
-		
-		var amount_along_normal = direction.dot(out_normal)
 		# where on the door-line we test
-		var hit_point = test_pos + direction * (distance / amount_along_normal)
+		var hit_point = portal.cast_on(test_pos, direction, distance)
 		
 		var rcparams = PhysicsRayQueryParameters2D.create(
 			test_pos,
@@ -110,7 +123,12 @@ func get_visible_portal_range(portal: Portal) -> Array[Vector2]:
 # https://www.reddit.com/r/godot/comments/17fed5p/is_there_a_way_to_put_a_button_on_the_inspector/
 @export_tool_button("Redraw line") var redraw = queue_redraw
 func _draw():
-	if !(current_room and debug): return
+	if !(current_room): return
+	
+	if !Engine.is_editor_hint():
+		meshes.map(func(x): draw_mesh(x.mesh, x.room.texture, Transform2D(0, to_local(Vector2.ZERO))))
+	
+	if (Engine.is_editor_hint() and !debug): return
 	
 	for portal in current_room.portals:
 		var vis_range = get_visible_portal_range(portal)

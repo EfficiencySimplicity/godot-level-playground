@@ -1,5 +1,8 @@
 class_name MeshPool
 
+## A more controllable mesh-proxy that lets you access the
+## data easily and is convertable to a mesh on-demand
+
 # where the point is in world space
 var vertices: PackedVector2Array = []
 # each set of 3 numbers specifies a triangle
@@ -30,9 +33,9 @@ static func combine(pools: Array[MeshPool]) -> MeshPool:
 
 	return MeshPool.new(glob_vertices, glob_triangles, glob_uvs)
 	
-func to_mesh(mesh: ArrayMesh):
-	if self.is_useless():
-		return mesh
+func to_mesh(mesh = null):
+	if !mesh: mesh = ArrayMesh.new()
+	if self.is_useless(): return mesh
 		
 	# https://docs.godotengine.org/en/stable/tutorials/3d/procedural_geometry/arraymesh.html#doc-arraymesh
 	# https://www.dgp.toronto.edu/~ah/csc418/fall_2001/tut/ogl_draw.html

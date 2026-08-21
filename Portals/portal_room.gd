@@ -3,11 +3,10 @@ class_name PortalRoom extends Node2D
 
 @export var portals: Array[Portal]
 @onready var viewport: SubViewport = $SubViewport
-@onready var render_mesh: MeshInstance2D = $RenderMesh
+@export var texture: ViewportTexture
 
 func _ready():
 	viewport.world_2d = get_world_2d()
-	render_mesh.global_position = Vector2.ZERO
 	update_viewport()
 	
 # https://shaggydev.com/2022/09/27/godot-4-setter-getter/

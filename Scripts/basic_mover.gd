@@ -1,16 +1,19 @@
-extends Node2D
+extends StaticBody2D
 
 @onready var po = $PortalOrigin
 @onready var sprite = $Sprite2D
+@onready var shape = $CollisionShape2D
 
 @export var speed: float
 
 func point_is_ok(pos: Vector2):
-	var pqparams = PhysicsPointQueryParameters2D.new()
-	pqparams.collision_mask = 0b00000000_00000000_00000000_00000001
-	pqparams.position = pos + Vector2.from_angle(sprite.global_rotation) * sprite.global_scale.x * 64
-	
-	return get_viewport().get_world_2d().get_direct_space_state().intersect_point(pqparams).size() == 0
+	var sqparams = PhysicsShapeQueryParameters2D.new()
+	sqparams.collision_mask = 0b00000000_00000000_00000000_00000001
+	sqparams.shape = shape.shape
+	sqparams.transform = Transform2D(shape.global_rotation, pos)
+	sqparams.exclude = [self.get_rid()]
+
+	return get_viewport().get_world_2d().get_direct_space_state().intersect_shape(sqparams).size() == 0
 	
 		
 func _process(delta):

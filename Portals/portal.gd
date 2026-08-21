@@ -52,6 +52,11 @@ func get_out_normal():
 func distance_to(point: Vector2) -> float:
 	return (get_start() - point).dot(get_out_normal())
 	
+func cast_on(point: Vector2, dir: Vector2, distance = null, distance_along_self = null) -> Vector2:
+	if !distance: distance = distance_to(point)
+	if !distance_along_self: distance_along_self = dir.dot(get_out_normal())
+	return point + dir * (distance / distance_along_self)
+	
 func get_vec_along():
 	return (get_end() - get_start()).normalized()
 	
