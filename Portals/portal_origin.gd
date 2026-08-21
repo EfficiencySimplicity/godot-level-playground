@@ -2,17 +2,24 @@
 class_name PortalOrigin extends Portable
 
 @export var angle_increase: int = 5
-var meshes: Array[PortalVisionArea]
+var all_meshes: Array[PortalVisionArea]
 
 class PortalVisionArea:
-	var mesh: ArrayMesh
+	var mesh_pool: MeshPool
+	var mesh
 	var room: PortalRoom
 	var y: int
 	
-	func _init(_mesh: ArrayMesh, _room: PortalRoom, _y: int):
-		mesh = _mesh
+	func _init(_mesh_pool: MeshPool, _room: PortalRoom, _y: int):
+		mesh_pool = _mesh_pool
 		room = _room
 		y = _y
+		
+	# TODO: as a getter
+	func get_mesh():
+		if !mesh:
+			mesh = mesh_pool.to_mesh(ArrayMesh.new())
+		return mesh
 
 @export var debug: bool:
 	set(v):
@@ -27,7 +34,11 @@ class PortalVisionArea:
 func gen_portals():
 	if !current_room: return
 		
-	meshes = []
+	all_meshes = get_meshes(current_room, global_position, 1)
+	all_meshes.sort_custom(func(a, b): return b.y > a.y)
+	queue_redraw()
+	return
+	all_meshes = []
 	
 	for portal in current_room.portals:
 		
@@ -43,19 +54,64 @@ func gen_portals():
 			[portal.port_pos(vis_range[0]), portal.port_pos(vis_range[1])]
 		)
 
-		meshes.append(
-			PortalVisionArea.new(mesh_pool.to_mesh(), portal.other.room, 1)
+		all_meshes.append(
+			PortalVisionArea.new(mesh_pool, portal.other.room, 1)
 		)
 
-	meshes.sort_custom(func(a, b): return b.y > a.y)
+	all_meshes.sort_custom(func(a, b): return b.y > a.y)
 	queue_redraw()
+	
+func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_limit = null, max_limit = null) -> Array[PortalVisionArea]:
+	var meshes: Array[PortalVisionArea] = []
+	
+	var pos_on_plane = cast_from.cast_on(pos, cast_from.get_out_normal()) if cast_from else global_position
+	
+	for portal in room.portals:
+		if !portal.is_in_front(pos_on_plane): continue
+		
+		var vis_range = get_visible_portal_range(portal, pos, pos_on_plane, cast_from, min_limit, max_limit)
+		
+		if vis_range.is_empty():
+			continue
+		
+		# get all the meshes in the room and transform 'em back and draw the verts
+		var mesh_pool = portal.other.room.get_extended_mesh_from_portal(
+			portal.other,
+			portal.port_pos(pos), 
+			[portal.port_pos(vis_range[0]), portal.port_pos(vis_range[1])]
+		)
+
+		meshes.append(
+			PortalVisionArea.new(mesh_pool, portal.other.room, 1)
+		)
+		
+		if iter > 0:
+			meshes.append_array(
+				get_meshes(portal.other.room, portal.port_pos(pos), iter-1, portal.other, vis_range[0], vis_range[1])
+				.map(func(x): 
+						return PortalVisionArea.new(
+							MeshPool.new(
+								PackedVector2Array(Array(x.mesh_pool.vertices).map(func(v): return portal.other.port_pos(v))),
+								x.mesh_pool.triangles,
+								x.mesh_pool.uvs
+							),
+							x.room,
+							x.y + 1
+						)
+						)
+				)
+
+	return meshes
 		
 ## The PortalOrigin needs to imagine itself in a virtual place inside another room sometimes,
 ## so we can pass in test_pos as the position to test from.
 ## along with a portal we're looking thru to cast from,
 ## along with the angle range we have to look thru this door.
-func get_visible_portal_range(portal: Portal, test_pos = null, cast_from = null, min_angle = null, max_angle = null) -> Array[Vector2]:
-	if !portal.is_in_front(global_position):
+func get_visible_portal_range(portal: Portal, pos = null, pos_on_plane = null, cast_from = null, min_limit = null, max_limit = null) -> Array[Vector2]:
+	pos = pos if pos else global_position
+	pos_on_plane = pos_on_plane if pos_on_plane else pos
+	
+	if !portal.is_in_front(pos_on_plane):
 		return []
 			
 	var start = portal.get_start()
@@ -63,20 +119,41 @@ func get_visible_portal_range(portal: Portal, test_pos = null, cast_from = null,
 	var out_normal = portal.get_out_normal()
 		
 	# from you to the door-line
-	var distance = portal.distance_to(global_position)
-	
-	if !test_pos: test_pos = global_position
+	var distance = portal.distance_to(pos)
 	
 	if distance < 1:
-		test_pos -= out_normal * (1 - distance)
+		pos -= out_normal * (1 - distance)
 		distance = 1
 		
-	var start_angle = rad_to_deg(global_position.angle_to_point(start))
-	var end_angle = rad_to_deg(global_position.angle_to_point(end))
+	var start_angle = rad_to_deg(pos.angle_to_point(start))
+	var end_angle = rad_to_deg(pos.angle_to_point(end))
 	
 	if end_angle < start_angle:
 		end_angle += 360
-
+		
+	# not enough to know about the portal, we must also know where on the portal we can see...
+	# if we have the portal, we'll have the limits too!
+	# this block tests if the portal (inside the room we're looking into) 
+	# is visible from the part of the portal we can see through
+	if cast_from:
+		var min_angle = rad_to_deg(pos.angle_to_point(min_limit))
+		var max_angle = rad_to_deg(pos.angle_to_point(max_limit))
+		
+		if max_angle < min_angle:
+			max_angle += 360
+			
+		if Utils.compare_angles(max_angle, start_angle):
+			return []
+			
+		if Utils.compare_angles(end_angle, min_angle):
+			return []
+			
+		if Utils.compare_angles(start_angle, min_angle):
+			start_angle = min_angle
+			
+		if Utils.compare_angles(max_angle, end_angle):
+			end_angle = max_angle
+		
 	var min_ok_point = Vector2.ZERO
 	var max_ok_point = Vector2.ZERO
 	
@@ -91,10 +168,13 @@ func get_visible_portal_range(portal: Portal, test_pos = null, cast_from = null,
 		# https://forum.godotengine.org/t/how-to-get-a-portion-of-a-vector-that-is-aligned-with-another-vector/40426/4
 		var direction = Vector2.from_angle(deg_to_rad(current_angle))
 		# where on the door-line we test
-		var hit_point = portal.cast_on(test_pos, direction, distance)
+		var hit_point = portal.cast_on(pos, direction, distance)
+		
+		# TODO: distance to the casting plane!!!
+		var start_pos = pos if !cast_from else cast_from.cast_on(pos, direction)
 		
 		var rcparams = PhysicsRayQueryParameters2D.create(
-			test_pos,
+			start_pos,
 			hit_point,
 			0b00000000_00000000_00000000_00000010
 		)
@@ -126,7 +206,7 @@ func _draw():
 	if !(current_room): return
 	
 	if !Engine.is_editor_hint():
-		meshes.map(func(x): draw_mesh(x.mesh, x.room.texture, Transform2D(0, to_local(Vector2.ZERO))))
+		all_meshes.map(func(x): draw_mesh(x.get_mesh(), x.room.texture, Transform2D(0, to_local(Vector2.ZERO))))
 	
 	if (Engine.is_editor_hint() and !debug): return
 	
@@ -135,7 +215,7 @@ func _draw():
 		
 		if vis_range.is_empty():
 			draw_line(to_local(global_position), to_local(portal.global_position), Color.BLACK)
-			return
+			continue
 		
 		draw_line(to_local(global_position), to_local(vis_range[0]), Color.BLUE)
 		draw_line(to_local(global_position), to_local(vis_range[1]), Color.BLUE)

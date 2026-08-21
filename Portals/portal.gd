@@ -41,7 +41,7 @@ func port_pos(pos: Vector2) -> Vector2:
 
 
 func is_in_front(pos: Vector2):
-	return Vector2.from_angle(global_rotation + deg_to_rad(90)).dot(pos - global_position) >= 0
+	return Vector2.from_angle(global_rotation + deg_to_rad(90)).dot(pos - global_position) > 0
 
 func get_normal():
 	return Vector2.from_angle(deg_to_rad(global_rotation_degrees + 90))
