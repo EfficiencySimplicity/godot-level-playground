@@ -21,7 +21,7 @@ size = Vector2(31.999992, 32)
 [node name="Room1" type="Node2D" parent="." unique_id=878595566]
 
 [node name="PortalRoom" parent="Room1" unique_id=1972959863 node_paths=PackedStringArray("portals") instance=ExtResource("1_3ulh2")]
-portals = [NodePath("../Sprite2D/Portal"), NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal")]
+portals = [NodePath("../Sprite2D2/Portal"), NodePath("../Sprite2D3/Portal"), NodePath("../Sprite2D/Portal")]
 texture = SubResource("ViewportTexture_3ulh2")
 bounds = Rect2(0, 0, 448, 320)
 
@@ -138,6 +138,7 @@ ignore_rotation = false
 visibility_layer = 2
 scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("6_reody")
+angle_step = null
 debug = true
 current_room = NodePath("../../Room1/PortalRoom")
 metadata/_custom_type_script = "uid://cx0j3yf4egp72"

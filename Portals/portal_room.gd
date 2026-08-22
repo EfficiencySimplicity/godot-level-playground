@@ -33,7 +33,7 @@ func _draw():
 ## The portal should be one *in this room*, with the point and vis range
 ## being transformed to be looking *into* this room *from* outside.
 ## It transforms the coordinates back into the other room's space at the end
-func get_extended_mesh_from_portal(portal: Portal, view_point: Vector2, vis_range: Array[Vector2]) -> MeshPool:
+func get_extended_mesh_from_portal(portal: Portal, view_point: Vector2, vis_range: Array[Vector2]) -> ViewMesh:
 	var min_angle = rad_to_deg(view_point.angle_to_point(vis_range[0]))
 	var max_angle = rad_to_deg(view_point.angle_to_point(vis_range[1]))
 	
@@ -67,23 +67,22 @@ func get_extended_mesh_from_portal(portal: Portal, view_point: Vector2, vis_rang
 	# - the last point on the door that's visible, extended, and then - not extended
 	pts.append_array([max_extended, vis_range[1]])
 
-	var triangles: PackedInt32Array = []
+	var triangles = []
 	# basic fan method
 	for i in range(pts.size() - 1):
 		triangles.append(0)
 		triangles.append(i)
 		triangles.append(i + 1)
 		
-	var uvs: PackedVector2Array = PackedVector2Array(pts.map(func(x): return to_uv(x)))
+	var uvs = pts.map(func(x): return to_uv(x))
 		
-	return MeshPool.new(
-		PackedVector2Array(pts.map(func(x): return portal.port_pos(x))),
+	return ViewMesh.new(
+		pts.map(func(x): return portal.port_pos(x)),
 		triangles,
-		uvs
+		uvs,
+		self,
+		1
 	)
 
 func to_uv(pos: Vector2) -> Vector2:
 	return ((pos - bounds.position) / bounds.size).clamp(Vector2.ZERO, Vector2.ONE)
-
-func fromto(from: Orientation, to: Orientation):
-	pass
