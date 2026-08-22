@@ -19,7 +19,13 @@ var all_meshes: Array[ViewMesh]
 	set(v):
 		show_test_angles = v
 		queue_redraw()
+		
+@export var gen_each_frame: bool
 	
+func _process(_delta):
+	if Engine.is_editor_hint(): return
+	if gen_each_frame: gen_portals()
+		
 func gen_portals():
 	if !current_room: return
 		

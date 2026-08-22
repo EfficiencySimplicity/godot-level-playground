@@ -1,4 +1,4 @@
-extends StaticBody2D
+extends Area2D
 
 @onready var po = $PortalOrigin
 @onready var sprite = $Sprite2D

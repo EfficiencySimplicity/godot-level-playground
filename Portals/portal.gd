@@ -28,6 +28,7 @@ func _draw():
 	
 	draw_circle(to_local(get_start()), 5, Color.RED)
 	draw_circle(to_local(get_end()), 5, Color.RED)
+	draw_line(to_local(global_position), to_local(global_position + get_normal() * 16), Color.WHITE)
 
 func port(orientation: Orientation) -> Orientation:
 	var relative_pos = orientation.pos - global_position
