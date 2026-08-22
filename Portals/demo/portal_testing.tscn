@@ -155,6 +155,7 @@ scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("6_reody")
 angle_step = 2
 debug = true
+show_test_angles = true
 current_room = NodePath("../../Room1/PortalRoom")
 metadata/_custom_type_script = "uid://cx0j3yf4egp72"
 

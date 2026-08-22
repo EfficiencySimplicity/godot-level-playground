@@ -220,15 +220,11 @@ func _draw():
 	if !(current_room): is_drawing = false; return
 	
 	if !Engine.is_editor_hint():
-		all_meshes.map(
-			func(x):
-				draw_mesh(x.get_mesh(), x.room.texture, Transform2D(0, to_local(Vector2.ZERO)))
-				var color = Color.from_rgba8(x.y * 64, x.y * 64, x.y * 64)
-				Array(x.vertices).map(func(v): draw_circle(to_local(v), 10 - x.y * 3, color))
-		)
-		
-		get_meshes(current_room, global_position, 1)
-				
+		for x in all_meshes:
+			draw_mesh(x.get_mesh(), x.room.texture, Transform2D(0, to_local(Vector2.ZERO)))
+		# sometimes the draw system needs an extra slap in the face to remember to draw the meshes above
+		# this non-circle does the job somehow
+		draw_circle(Vector2.ZERO, 0, Color.RED)
 	
 	if (!Engine.is_editor_hint() or !debug): is_drawing = false; return
 	
