@@ -26,9 +26,8 @@ size = Vector2(64, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m0e24"]
 size = Vector2(192, 64)
 
-[node name="Door" unique_id=70122258 node_paths=PackedStringArray("actual_door", "tiles", "layers") instance=ExtResource("1_w6aom")]
+[node name="Door" unique_id=70122258 node_paths=PackedStringArray("tiles", "layers") instance=ExtResource("1_w6aom")]
 script = ExtResource("2_fahql")
-actual_door = NodePath("Door")
 tiles = [NodePath("Placement/TileStamper")]
 layers = {
 NodePath("Placement/Solids"): ExtResource("3_8c32u"),
@@ -71,10 +70,11 @@ position = Vector2(32, -32)
 shape = SubResource("RectangleShape2D_m0e24")
 
 [node name="Door" type="Node2D" parent="." index="1" unique_id=813266760]
-position = Vector2(32, -32)
+position = Vector2(32, -8)
 script = ExtResource("4_a43ba")
 
 [node name="Sprite2D" type="Sprite2D" parent="Door" index="0" unique_id=653719424]
 modulate = Color(1, 1, 1, 0.15294118)
+position = Vector2(0, -24)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_p0e35")

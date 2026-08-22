@@ -14,13 +14,20 @@ var all_meshes: Array[ViewMesh]
 	set(v):
 		show_external_bounds = v
 		queue_redraw()
+		
+@export var show_test_angles: bool:
+	set(v):
+		show_test_angles = v
+		queue_redraw()
 	
 func gen_portals():
 	if !current_room: return
 		
-	all_meshes = get_meshes(current_room, global_position)
+	all_meshes = get_meshes(current_room, global_position, 1)
 	all_meshes.sort_custom(func(a, b): return b.y > a.y)
+	
 	queue_redraw()
+	
 	return
 
 	
@@ -37,6 +44,8 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 		if vis_range.is_empty():
 			if is_drawing: draw_line(to_local(pos), to_local(portal.global_position), Color.BLACK)
 			continue
+		elif is_drawing:
+			draw_line(to_local(pos), to_local(portal.global_position), Color.MEDIUM_SLATE_BLUE)
 			
 		#if is_drawing:
 			#draw_line(to_local(pos), to_local(vis_range[0]), Color.BLUE)
@@ -87,12 +96,11 @@ func angle_range(min_angle, max_angle, step):
 ## so we can pass in test_pos as the position to test from.
 ## along with a portal we're looking thru to cast from,
 ## along with the angle range we have to look thru this door.
-func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_limit = null, max_limit = null) -> Array[Vector2]:
-	pos = pos if pos else global_position
+func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit = null, max_limit = null) -> Array[Vector2]:
 	var pos_on_plane = cast_from.cast_on(pos, cast_from.get_normal()) if cast_from else pos
 	
-	if !portal.is_in_front(pos_on_plane):
-		return []
+	if !portal.is_in_front(pos_on_plane): return []
+	if cast_from and !cast_from.is_in_front(portal.get_start()) and !cast_from.is_in_front(portal.get_end()): return []
 			
 	var start = portal.get_start()
 	var end   = portal.get_end()
@@ -111,6 +119,10 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 	if end_angle < start_angle:
 		end_angle += 360
 		
+	#if is_drawing:
+		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(start_angle)) * 200), Color.ORANGE, 8)
+		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(end_angle)) * 200), Color.ORANGE, 8)
+		#
 	# not enough to know about the portal, we must also know where on the portal we can see...
 	# if we have the portal, we'll have the limits too!
 	# this block tests if the portal (inside the room we're looking into) 
@@ -122,11 +134,11 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 		if max_angle < min_angle:
 			max_angle += 360
 			
-		if is_drawing:
-			draw_circle(to_local(max_limit), 2, Color.RED)
-			draw_circle(to_local(min_limit), 2, Color.RED)
-			draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(min_angle)) * 30), Color.RED, 5)
-			draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(max_angle)) * 30), Color.RED, 5)
+		#if is_drawing:
+			#draw_circle(to_local(max_limit), 2, Color.RED)
+			#draw_circle(to_local(min_limit), 2, Color.RED)
+			#draw_line(to_local(pos), to_local(min_limit), Color.RED, 5)
+			#draw_line(to_local(pos), to_local(max_limit), Color.RED, 5)
 			
 		if Utils.compare_angles(max_angle, start_angle):
 			return []
@@ -140,10 +152,16 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 		if Utils.compare_angles(max_angle, end_angle):
 			end_angle = max_angle
 			
-	if is_drawing:
-		draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(start_angle)) * 20), Color.ORANGE, 2)
-		draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(end_angle)) * 20), Color.ORANGE, 2)
-		
+		if end_angle < start_angle:
+			end_angle += 360
+			
+		if abs(end_angle - start_angle) > 180:
+			start_angle += 360
+
+	#if is_drawing:
+		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(start_angle)) * 200), Color.GREEN, 2)
+		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(end_angle)) * 200), Color.GREEN, 2)
+		#
 	var min_ok_point = Vector2.ZERO
 	var max_ok_point = Vector2.ZERO
 	
@@ -151,7 +169,6 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 
 	# start and end angle are both positive (end may be > 360),
 	# and end is clockwise from start
-	var scaled_angle_step = float(end_angle - start_angle) / ceil((end_angle - start_angle) / angle_step)
 
 	for current_angle in angle_range(start_angle, end_angle, angle_step):
 		
@@ -169,7 +186,7 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 			0b00000000_00000000_00000000_00000010
 		)
 		
-		if is_drawing:
+		if is_drawing and show_test_angles:
 			draw_line(to_local(start_pos), to_local(hit_point), Color.GREEN)
 		
 		var hit = get_viewport() \
@@ -177,7 +194,7 @@ func get_visible_portal_range(portal: Portal, pos = null, cast_from = null, min_
 		.get_direct_space_state() \
 		.intersect_ray(rcparams) \
 		.size() != 0
-		
+
 		if hit:
 			if has_hit_at_all:
 				break
@@ -210,13 +227,13 @@ func _draw():
 				Array(x.vertices).map(func(v): draw_circle(to_local(v), 10 - x.y * 3, color))
 		)
 		
-		get_meshes(current_room, global_position)
+		get_meshes(current_room, global_position, 1)
 				
 	
 	if (!Engine.is_editor_hint() or !debug): is_drawing = false; return
 	
 	for portal in current_room.portals:
-		var vis_range = get_visible_portal_range(portal)
+		var vis_range = get_visible_portal_range(portal, global_position)
 		
 		if vis_range.is_empty():
 			draw_line(to_local(global_position), to_local(portal.global_position), Color.BLACK)
