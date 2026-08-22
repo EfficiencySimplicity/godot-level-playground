@@ -2,6 +2,7 @@
 class_name PortalOrigin extends Portable
 
 @export var angle_step: int = 5
+@export var iterations: int = 0
 
 var all_meshes: Array[ViewMesh]
 
@@ -29,7 +30,7 @@ func _process(_delta):
 func gen_portals():
 	if !current_room: return
 		
-	all_meshes = get_meshes(current_room, global_position, 1)
+	all_meshes = get_meshes(current_room, global_position, iterations)
 	all_meshes.sort_custom(func(a, b): return b.y > a.y)
 	
 	queue_redraw()
