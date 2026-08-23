@@ -55,6 +55,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room2/Sprite2D3/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D2" type="Sprite2D" parent="Room1" unique_id=1283948828]
@@ -70,6 +71,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D3/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D3" type="Sprite2D" parent="Room1" unique_id=535523429]
@@ -85,6 +87,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D2/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Room2" type="Node2D" parent="." unique_id=1738648032]
@@ -108,6 +111,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D2/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D2" type="Sprite2D" parent="Room2" unique_id=65018631]
@@ -124,6 +128,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D3" type="Sprite2D" parent="Room2" unique_id=1459230316]
@@ -139,6 +144,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room1/Sprite2D/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D4" type="Sprite2D" parent="Room2" unique_id=1897474517]
@@ -154,6 +160,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room3/Sprite2D3/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Room3" type="Node2D" parent="." unique_id=748257415]
@@ -177,6 +184,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D2/Portal")
 width = 256.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D2" type="Sprite2D" parent="Room3" unique_id=1324548758]
@@ -193,6 +201,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Sprite2D/Portal")
 width = 256.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D3" type="Sprite2D" parent="Room3" unique_id=6672364]
@@ -208,6 +217,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room2/Sprite2D4/Portal")
 width = 64.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Sprite2D4" type="Sprite2D" parent="Room3" unique_id=542865214]
@@ -223,6 +233,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room4/Sprite2D/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Room4" type="Node2D" parent="." unique_id=808540087]
@@ -246,6 +257,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../../Room3/Sprite2D4/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Left" type="Sprite2D" parent="Room4" unique_id=905214939]
@@ -261,6 +273,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Rotator/AnimatableBody2D/Left/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Up" type="Sprite2D" parent="Room4" unique_id=725733696]
@@ -275,6 +288,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Rotator/AnimatableBody2D/Up/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Right" type="Sprite2D" parent="Room4" unique_id=159715894]
@@ -290,6 +304,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Rotator/AnimatableBody2D/Right/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Down" type="Sprite2D" parent="Room4" unique_id=1669064599]
@@ -305,6 +320,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../PortalRoom")
 other = NodePath("../../Rotator/AnimatableBody2D/Down/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Rotator" type="Area2D" parent="Room4" unique_id=41126308]
@@ -379,6 +395,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../../../PortalRoom")
 other = NodePath("../../../../Right/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Down" type="Sprite2D" parent="Room4/Rotator/AnimatableBody2D" unique_id=786779435]
@@ -393,6 +410,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../../../PortalRoom")
 other = NodePath("../../../../Down/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Left" type="Sprite2D" parent="Room4/Rotator/AnimatableBody2D" unique_id=100430208]
@@ -408,6 +426,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../../../PortalRoom")
 other = NodePath("../../../../Left/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="Up" type="Sprite2D" parent="Room4/Rotator/AnimatableBody2D" unique_id=1968274391]
@@ -423,6 +442,7 @@ script = ExtResource("3_nxjg0")
 room = NodePath("../../../../PortalRoom")
 other = NodePath("../../../../Up/Portal")
 width = 128.0
+debug = true
 metadata/_custom_type_script = "uid://dfy4j7gwujpwa"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1405045613]
