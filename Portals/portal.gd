@@ -60,7 +60,7 @@ func port(orientation: Orientation) -> Orientation:
 	
 ## Takes a Vector2 and transforms it through the portal
 func port_pos(pos: Vector2) -> Vector2:
-	return Orientation.new(other.global_position, rotation_change_through()).map_vector2(pos - self.global_position)
+	return other.global_position + (pos - global_position).rotated(deg_to_rad(rotation_change_through()))
 
 ## Is this point in front of the portal? Points right on the portal are considered behind it.
 ## This doesn't take width into account; the portal is considered an infinite line
@@ -71,7 +71,7 @@ func is_in_front(pos: Vector2):
 ## A normalized vector pointing 'forwards' out of the portal; When is_in_front() is true,
 ## that means this vector is pointing roughly at you
 func get_normal():
-	return Vector2.from_angle(deg_to_rad(global_rotation_degrees + 90))
+	return Vector2.from_angle(global_rotation + PI / 2)
 	
 ## A normalized vector pointing 'out' of the portal; when you are walking towards a portal,
 ## you are walking in roughly the same direction as this vector
@@ -82,7 +82,7 @@ func get_out_normal():
 ## and the distance is to the nearest point on that line. 
 ## If you are behind the portal, the distance is negative.	
 func distance_to(point: Vector2) -> float:
-	return (get_start() - point).dot(get_out_normal())
+	return (global_position - point).dot(get_out_normal())
 
 ## Gets a point and a direction and finds where the point will hit the portal
 ## if it continues in that direction. It imagines the portal as an infinite line.

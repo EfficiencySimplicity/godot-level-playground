@@ -11,6 +11,13 @@ class_name PortalOrigin extends Portable
 @export var iterations: int = 0
 ## The raycast mask; set this to be blocked by walls or whatever.
 @export_flags_2d_physics var raycast_mask: int
+
+@onready var space_state : PhysicsDirectSpaceState2D:
+	get():
+		if !space_state:
+			space_state = get_viewport().get_world_2d().get_direct_space_state()
+			
+		return space_state
 ## If this is set to true, the ViewMeshes will be recalculated each frame.
 ## It's better to manually call gen_meshes() in code only when ya need it though;
 ## although Godot seems to handle this pretty well.
@@ -42,7 +49,8 @@ var all_meshes: Array[ViewMesh]
 func _process(_delta):
 	if Engine.is_editor_hint(): return
 	if gen_each_frame: gen_portals()
-		
+	
+## Generates and stores all the ViewMeshes from the current position
 func gen_portals():
 	if !current_room: return
 		
@@ -109,9 +117,9 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 
 	return meshes
 		
-# this is like range(), but floats are OK plus 
-# it takes the fact that rotation loops back around into account;
-# 359 degrees is only a little bit away from 2 degrees
+## this is like range(), but floats are OK, plus 
+## it takes the fact that rotation loops back around into account;
+## 359 degrees is only a little bit away from 2 degrees
 func angle_range(min_angle, max_angle, step):
 	if max_angle < min_angle: max_angle += 360
 	if abs(max_angle - min_angle) > 180: min_angle += 360
@@ -123,16 +131,19 @@ func angle_range(min_angle, max_angle, step):
 	r.append(max_angle)
 	return r
 	
+## Basically, given a portal, this shoots out raycasts and tells you the
+## first and last visible points on the portals surface (going clockwise). [br]
+## [br]
 ## The PortalOrigin needs to imagine itself in a virtual place inside another room sometimes,
 ## so we can pass in test_pos as the position to test from.
 ## along with a portal we're looking thru to cast from,
-## along with the angle range we have to look thru this door.
+## along with the angle range we have to look thru this portal.
 func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit = null, max_limit = null) -> Array[Vector2]:
 	var pos_on_plane = cast_from.cast_on(pos, cast_from.get_normal()) if cast_from else pos
 	
 	if !portal.is_in_front(pos_on_plane): return []
 	if cast_from and !cast_from.is_in_front(portal.get_start()) and !cast_from.is_in_front(portal.get_end()): return []
-			
+
 	var start = portal.get_start()
 	var end   = portal.get_end()
 	var out_normal = portal.get_out_normal()
@@ -190,11 +201,8 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 		if is_drawing and show_test_angles:
 			draw_line(start_pos, hit_point, Color.GREEN)
 		
-		var hit = get_viewport() \
-		.get_world_2d() \
-		.get_direct_space_state() \
-		.intersect_ray(rcparams) \
-		.size() != 0
+		# TODO: naming if hit an has_hit_at_all have different meanings...
+		var hit = space_state.intersect_ray(rcparams).size() != 0
 
 		if hit:
 			if has_hit_at_all:
@@ -214,7 +222,7 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 var is_drawing = false;
 
 # https://www.reddit.com/r/godot/comments/17fed5p/is_there_a_way_to_put_a_button_on_the_inspector/
-@export_tool_button("Redraw line") var redraw = queue_redraw
+@export_tool_button("Redraw debug lines") var redraw = queue_redraw
 func _draw():
 	is_drawing = true
 	

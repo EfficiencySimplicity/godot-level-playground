@@ -46,7 +46,6 @@ static func test_angle_comparisons():
 	assert(compare_angles(-140, 200) == false)
 	assert(compare_angles(-140, -170) == false)
 	assert(compare_angles(230, 200) == false)
-	#assert(false)
 	
 static func safediv(a, b):
 	return INT32_MAX if is_zero_approx(b) else a/b
@@ -71,6 +70,3 @@ static func extend_to_rect_edge(rect: Rect2, pos: Vector2, dir: Vector2):
 	if muls.size() == 0:
 		print(rect, " ", [left_mul, right_mul, up_mul, down_mul], " ", pos, " ", dir)
 	return pos + muls.min() * dir
-	
-		
-		

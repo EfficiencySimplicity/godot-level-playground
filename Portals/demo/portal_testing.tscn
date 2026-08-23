@@ -460,8 +460,6 @@ angle_step = 3
 iterations = 2
 raycast_mask = 2
 gen_each_frame = true
-show_external_bounds = true
-show_portal_visibility_ranges = true
 current_room = NodePath("../../Room1/PortalRoom")
 metadata/_custom_type_script = "uid://cx0j3yf4egp72"
 
