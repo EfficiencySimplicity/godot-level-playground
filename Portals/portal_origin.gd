@@ -1,27 +1,43 @@
 @tool
 class_name PortalOrigin extends Portable
 
+## A Portable that renders meshes of what it can see through all the portals in its room
+
+## The angle step when raycasting to see what is visible
 @export var angle_step: int = 5
+## How many rooms to render through; 
+## portals in the room you're looking into will also have ViewMeshes rendered for 'em.
+## A value of 0 only renders one iteration deep
 @export var iterations: int = 0
+## The raycast mask; set this to be blocked by walls or whatever.
+@export_flags_2d_physics var raycast_mask: int
+## If this is set to true, the ViewMeshes will be recalculated each frame.
+## It's better to manually call gen_meshes() in code only when ya need it though;
+## although Godot seems to handle this pretty well.
+@export var gen_each_frame: bool
 
 var all_meshes: Array[ViewMesh]
-
-@export var debug: bool:
-	set(v):
-		debug = v
-		queue_redraw()
 		
+## Show the bounds of all rooms one room away from the current one
 @export var show_external_bounds: bool:
 	set(v):
 		show_external_bounds = v
 		queue_redraw()
-		
+## Show the raycast test angles to each portal in the current room
 @export var show_test_angles: bool:
 	set(v):
 		show_test_angles = v
 		queue_redraw()
-		
-@export var gen_each_frame: bool
+## Show the min and max points visible on each portal in the current room
+@export var show_portal_visibility_ranges: bool:
+	set(v):
+		show_portal_visibility_ranges = v
+		queue_redraw()
+## Show the bounds of the meshes visible from the portals in the current room
+@export var show_mesh_bounds: bool:
+	set(v):
+		show_mesh_bounds = v
+		queue_redraw()
 	
 func _process(_delta):
 	if Engine.is_editor_hint(): return
@@ -34,27 +50,33 @@ func gen_portals():
 	all_meshes.sort_custom(func(a, b): return b.y > a.y)
 	
 	queue_redraw()
-	
-	return
 
 	
 ## Given a room and position within that room, get all the meshes you can from lookin' thru that
-## room's portals; optionally looking through a portal *into* that room, in which case limits are given.
+## room's portals; and the iter parameter is for recursion;
+## you might choose to render meshes inside the rooms you can see into;
+## in which case you transform your position to be outside that room looking in,
+## set cast_from to be the portal you're looking inTO, and set the limits to 
+## the min and max points of the portal you could see.
+## I can't explain all this with ASCII art, just trust me. 
 func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_limit = null, max_limit = null) -> Array[ViewMesh]:
 	var meshes: Array[ViewMesh] = []
 
 	for portal in room.portals:
+		# heh, no, this is the portal we're looking in FROM, no use considering it.
 		if portal == cast_from: continue
 		
 		var vis_range = get_visible_portal_range(portal, pos, cast_from, min_limit, max_limit)
 		
 		if vis_range.is_empty():
-			if is_drawing: draw_line(to_local(pos), to_local(portal.global_position), Color.BLACK)
+			# we cannot see any of this portal
+			if is_drawing: draw_line(pos, portal.global_position, Color.BLACK)
 			continue
-		elif is_drawing:
-			draw_line(to_local(pos), to_local(portal.global_position), Color.MEDIUM_SLATE_BLUE)
+		elif is_drawing and show_portal_visibility_ranges:
+			draw_line(global_position, vis_range[0], Color.BLUE)
+			draw_line(global_position, vis_range[1], Color.BLUE)
 		
-		# ask the room to give us a mesh
+		# ask the room to give us a ViewMesh of what we can see thru that portal
 		var mesh = portal.other.room.get_extended_mesh_from_portal(
 			portal.other,
 			portal.port_pos(pos), 
@@ -63,6 +85,7 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 
 		meshes.append(mesh)
 		
+		# look thru the portal and get the meshes IT can see
 		if iter > 0:
 			meshes.append_array(
 				get_meshes(
@@ -73,6 +96,7 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 					portal.port_pos(vis_range[0]),
 					portal.port_pos(vis_range[1]))
 				.map(func(x): 
+						# transform the vertices back thru the portal
 						return ViewMesh.new(
 							x.vertices.map(func(v): return portal.other.port_pos(v)),
 							x.triangles,
@@ -85,8 +109,12 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 
 	return meshes
 		
-		
+# this is like range(), but floats are OK plus 
+# it takes the fact that rotation loops back around into account;
+# 359 degrees is only a little bit away from 2 degrees
 func angle_range(min_angle, max_angle, step):
+	if max_angle < min_angle: max_angle += 360
+	if abs(max_angle - min_angle) > 180: min_angle += 360
 	var r = []
 	var s = min_angle
 	while s < max_angle:
@@ -119,9 +147,6 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 	var start_angle = rad_to_deg(pos.angle_to_point(start))
 	var end_angle = rad_to_deg(pos.angle_to_point(end))
 	
-	if end_angle < start_angle:
-		end_angle += 360
-	
 	# not enough to know about the portal, we must also know where on the portal we can see...
 	# if we have the portal, we'll have the limits too!
 	# this block tests if the portal (inside the room we're looking into) 
@@ -129,33 +154,14 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 	if cast_from:
 		var min_angle = rad_to_deg(pos.angle_to_point(min_limit))
 		var max_angle = rad_to_deg(pos.angle_to_point(max_limit))
-		
-		if max_angle < min_angle:
-			max_angle += 360
-			
-		#if is_drawing:
-			#draw_circle(to_local(max_limit), 2, Color.RED)
-			#draw_circle(to_local(min_limit), 2, Color.RED)
-			#draw_line(to_local(pos), to_local(min_limit), Color.RED, 5)
-			#draw_line(to_local(pos), to_local(max_limit), Color.RED, 5)
-			
-		if Utils.compare_angles(max_angle, start_angle):
-			return []
-			
-		if Utils.compare_angles(end_angle, min_angle):
-			return []
-			
-		if Utils.compare_angles(start_angle, min_angle):
-			start_angle = min_angle
-			
-		if Utils.compare_angles(max_angle, end_angle):
-			end_angle = max_angle
-			
-		if end_angle < start_angle:
-			end_angle += 360
-			
-		if abs(end_angle - start_angle) > 180:
-			start_angle += 360
+		# the portal ends before our view range even starts
+		if Utils.compare_angles(max_angle, start_angle): return []
+		# the portal starts after our view range ends
+		if Utils.compare_angles(end_angle, min_angle): return []
+		# the portal starts before our view range starts; edit the angle
+		if Utils.compare_angles(start_angle, min_angle): start_angle = min_angle
+		# the portal ends after our view range ends; edit the angle
+		if Utils.compare_angles(max_angle, end_angle): end_angle = max_angle
 
 	var min_ok_point = Vector2.ZERO
 	var max_ok_point = Vector2.ZERO
@@ -178,11 +184,11 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 		var rcparams = PhysicsRayQueryParameters2D.create(
 			start_pos,
 			hit_point,
-			0b00000000_00000000_00000000_00000010
+			raycast_mask
 		)
 		
 		if is_drawing and show_test_angles:
-			draw_line(to_local(start_pos), to_local(hit_point), Color.GREEN)
+			draw_line(start_pos, hit_point, Color.GREEN)
 		
 		var hit = get_viewport() \
 		.get_world_2d() \
@@ -214,46 +220,39 @@ func _draw():
 	
 	if !(current_room): is_drawing = false; return
 	
+	draw_set_transform_matrix(global_transform.affine_inverse())
+	
 	if !Engine.is_editor_hint():
 		for x in all_meshes:
-			draw_mesh(x.get_mesh(), x.room.texture, Transform2D(0, to_local(Vector2.ZERO)))
+			draw_mesh(x.get_mesh(), x.room.texture, Transform2D(0, Vector2.ZERO))
 		# sometimes the draw system needs an extra slap in the face to remember to draw the meshes above
 		# this non-circle does the job somehow
 		draw_circle(Vector2.ZERO, 0, Color.RED)
 	
-	if (!Engine.is_editor_hint() or !debug): is_drawing = false; return
-	
-	for portal in current_room.portals:
-		var vis_range = get_visible_portal_range(portal, global_position)
+	if (show_test_angles or show_portal_visibility_ranges or show_mesh_bounds):
+		# we get the meshes with an iter of zero, and since we're drawing, the debug data gets shown!
+		var meshes = get_meshes(current_room, global_position)
 		
-		if vis_range.is_empty():
-			draw_line(to_local(global_position), to_local(portal.global_position), Color.BLACK)
-			continue
+		if show_mesh_bounds:
+			meshes.map(
+				func(mesh): 
+					draw_polyline(mesh.vertices, Color.AQUA)
+					mesh.vertices.map(func(v): draw_circle(v, 5, Color.AQUA))
+			)
 		
-		draw_line(to_local(global_position), to_local(vis_range[0]), Color.BLUE)
-		draw_line(to_local(global_position), to_local(vis_range[1]), Color.BLUE)
+	if show_external_bounds:
+		var bounds_color = Color.HOT_PINK
+		bounds_color.a = .25
 		
-		# get all the meshes in the room and transform 'em back and draw the verts
-		var mesh = portal.other.room.get_extended_mesh_from_portal(
-			portal.other,
-			portal.port_pos(global_position), 
-			[portal.port_pos(vis_range[0]), portal.port_pos(vis_range[1])]
-		)
+		for portal in current_room.portals:
 		
-		draw_polyline(mesh.vertices.map(func(x): return to_local(x)), Color.AQUA)
-		mesh.vertices.map(func(x): draw_circle(to_local(x), 5, Color.AQUA))
-		
-		if show_external_bounds:
-			var bounds_color = Color.HOT_PINK
-			bounds_color.a = .25
-			
 			var bounds = portal.other.room.bounds
 			var pos = portal.other.port_pos(bounds.position)
 			var size = portal.other.port_pos(bounds.position + bounds.size) - pos
 			
 			draw_rect(
 				Rect2(
-					to_local(pos.min(pos + size)),
+					pos.min(pos + size),
 					pos.max(pos + size) - pos.min(pos + size)
 				),
 				bounds_color

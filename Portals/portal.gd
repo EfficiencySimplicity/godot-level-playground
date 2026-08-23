@@ -17,7 +17,7 @@ class_name Portal extends Node2D
 		width = v
 		queue_redraw()
 
-@export var debug: bool:
+@export var debug: bool = true:
 	set(v):
 		debug = v
 		queue_redraw()
