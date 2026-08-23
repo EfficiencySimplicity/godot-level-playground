@@ -53,10 +53,6 @@ func get_meshes(room: PortalRoom, pos: Vector2, iter = 0, cast_from = null, min_
 			continue
 		elif is_drawing:
 			draw_line(to_local(pos), to_local(portal.global_position), Color.MEDIUM_SLATE_BLUE)
-			
-		#if is_drawing:
-			#draw_line(to_local(pos), to_local(vis_range[0]), Color.BLUE)
-			#draw_line(to_local(pos), to_local(vis_range[1]), Color.BLUE)
 		
 		# ask the room to give us a mesh
 		var mesh = portal.other.room.get_extended_mesh_from_portal(
@@ -125,11 +121,7 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 	
 	if end_angle < start_angle:
 		end_angle += 360
-		
-	#if is_drawing:
-		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(start_angle)) * 200), Color.ORANGE, 8)
-		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(end_angle)) * 200), Color.ORANGE, 8)
-		#
+	
 	# not enough to know about the portal, we must also know where on the portal we can see...
 	# if we have the portal, we'll have the limits too!
 	# this block tests if the portal (inside the room we're looking into) 
@@ -165,10 +157,6 @@ func get_visible_portal_range(portal: Portal, pos, cast_from = null, min_limit =
 		if abs(end_angle - start_angle) > 180:
 			start_angle += 360
 
-	#if is_drawing:
-		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(start_angle)) * 200), Color.GREEN, 2)
-		#draw_line(to_local(pos), to_local(pos + Vector2.from_angle(deg_to_rad(end_angle)) * 200), Color.GREEN, 2)
-		#
 	var min_ok_point = Vector2.ZERO
 	var max_ok_point = Vector2.ZERO
 	
