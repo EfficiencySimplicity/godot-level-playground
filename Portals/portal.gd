@@ -7,9 +7,32 @@ class_name Portal extends Node2D
 ## A PortalOrigin uses the Portals in the room it's in to collect and render out ViewMeshes
 
 ## The PortalRoom this Portal belongs to
-@export var room: PortalRoom
+@export var room: PortalRoom:
+	set(new_room):
+		var old_room = room
+		room = new_room
+		
+		if old_room != null and old_room.portals.has(self):
+			old_room.portals.remove_at(old_room.portals.find(self))
+
+		if new_room != null and !new_room.portals.has(self):
+			new_room.portals.append(self)
+
 ## The Portal this one links to
-@export var other: Portal
+@export var other: Portal:
+	set(v):
+		if v == other: return
+		# we check this after setting other to =v, otherwise an infinite loop'll occur.
+		var old_other = other
+
+		other = v
+		
+		if old_other != null and old_other.other == self:
+			old_other.other = null
+			
+		if other != null and other.other != self:
+			v.other = self
+		if debug: queue_redraw()
 
 ## The width of the Portal; independent of any actual scaling in-game
 @export var width: float:
@@ -21,12 +44,12 @@ class_name Portal extends Node2D
 	set(v):
 		debug = v
 		queue_redraw()
-
-# TODO: this can happen in the getter / setter
-## Conects this portal to another; setting the 'other' property of each.
-func connect_portal(_other: Portal):
-	other = _other
-	other.other = self
+		
+func _ready():
+	assert(other != null, "Portal %s's 'other' parameter is null" % self)
+	assert(other.other == self, "Portal %s's 'other' doesn't connect back to it" % self)
+	assert(room != null, "Portal %s's 'room' parameter is null" % self)
+	assert(room.portals.has(self), "Portal %s's 'room' parameter doesn't have the portal in its 'portals' array" % self)
 
 # https://docs.godotengine.org/en/stable/tutorials/2d/custom_drawing_in_2d.html
 func _draw():
@@ -37,10 +60,21 @@ func _draw():
 	draw_set_transform_matrix(global_transform.affine_inverse())
 	
 	if other:
-		var c = Color.LIGHT_PINK
-		c.a = .5
-		draw_line(global_position, other.global_position, c, 2)
-		draw_circle(global_position, 5, c)
+		var c = Color.GREEN
+		draw_line(
+			global_position,
+			global_position + (other.global_position - global_position) / 2,
+			c, 2
+		)
+		
+		if other.other != self:
+			c = Color.RED
+		
+		draw_line(
+			global_position + (other.global_position - global_position) / 2,
+			other.global_position,
+			c, 2
+		)
 	
 	draw_circle(get_start(), 3, Color.AZURE)
 	draw_circle(get_end(), 3, Color.AZURE)

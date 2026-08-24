@@ -5,7 +5,18 @@ class_name PortalRoom extends Node2D
 ## use its texture, instead of a camera / viewport / texture for each Portal.
 
 ## All the portals this room owns (not necessarily children of it)
-@export var portals: Array[Portal]
+@export var portals: Array[Portal]:
+	set(v):
+		if v == portals: return
+		
+		var added   =       v.filter(func(x): return !portals.has(x))
+		var deleted = portals.filter(func(x): return !v.has(x))
+		
+		added.map(func(x): if x.room != self: x.room = self)
+		deleted.map(func(x): if x.room == self: x.room = null)
+		
+		if debug: queue_redraw()
+		
 ## The SubViewport used for rendering all views into this Room
 @onready var viewport: SubViewport = $SubViewport
 ## The ViewportTexture this room renders to
@@ -14,9 +25,13 @@ class_name PortalRoom extends Node2D
 # https://shaggydev.com/2022/09/27/godot-4-setter-getter/
 ## The room bounds. This should contain everything that should be visible when looking into the room.
 ## It should also encompass all Portals within the room, with a little bit of extra margin.
-@export var bounds: Rect2:
+var bounds: Rect2:
+	get():
+		return Rect2(global_position, size)
+
+@export var size: Vector2 = Vector2.ONE * 64:
 	set(v):
-		bounds = v
+		size = v
 		queue_redraw()
 		if viewport: update_viewport()
 		
@@ -24,6 +39,27 @@ class_name PortalRoom extends Node2D
 	set(v):
 		debug = v
 		queue_redraw()
+		
+@export_tool_button("Collect all Portals within bounds") var cpwb = collect_portals_within_bounds
+func collect_portals_within_bounds():
+	var scene
+	if Engine.is_editor_hint():
+		scene = get_tree().edited_scene_root
+	else:
+		scene = get_tree().current_scene
+		
+	if !scene:
+		push_error("Could not get current scene")
+		
+	var portals_within_bounds = scene.find_children("*", "Portal", true, false).filter(
+		func(portal):
+			return bounds.has_point(portal.global_position)
+	)
+	
+	var typed_portal_array: Array[Portal]
+	typed_portal_array.assign(portals_within_bounds)
+
+	portals = typed_portal_array
 		
 
 func _ready():
@@ -38,8 +74,16 @@ func update_viewport():
 
 func _draw():
 	if !debug: return
-	draw_rect(Rect2(to_local(bounds.position), bounds.size), Color.from_rgba8(255, 255, 0, 128))
+	draw_set_transform_matrix(global_transform.affine_inverse())
 	
+	draw_rect(bounds, Color.from_rgba8(255, 255, 0, 128))
+	
+	for portal in portals:
+		var c = Color.RED
+		for i in 5:
+			draw_circle(portal.global_position, i * 10, c)
+			c.a -= .8 / 5
+			
 ## Say an origin in another room is looking into this room; we need to give that origin
 ## the shape of the mesh it can see. We take: [br]
 ##
